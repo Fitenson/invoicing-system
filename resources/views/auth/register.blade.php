@@ -27,8 +27,8 @@
                         <form action="{{ url('/register') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" id="username" name="username" class="form-control" value="{{ old('username') }}" required>
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" id="name" name="name" class="form-control" value="{{ old('name') }}" required>
                             </div>
 
                             <div class="mb-3">

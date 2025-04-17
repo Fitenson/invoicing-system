@@ -7,20 +7,31 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Modules\User\Model\User;
 use App\Http\Controllers\Controller;
-
+use App\Modules\Auth\Service\AuthService;
 
 class AuthController extends Controller
 {
+    private AuthService $auth_service;
+
+
+    public function __construct(AuthService $auth_service)
+    {
+        $this->auth_service = $auth_service;
+    }
+
+
     //  Login function
     public function login(Request $request)
     {
-        $postData = $request->validate([
-            'username' => ['required'],
+        $post_data = $request->validate([
+            'name' => ['required'],
             'password' => ['required'],
         ]);
 
+        $login = $this->auth_service->login($post_data, $request);
+
         //  If success, go to dashboard
-        if (Auth::attempt($postData)) {
+        if ($login) {
             $request->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
@@ -28,7 +39,7 @@ class AuthController extends Controller
 
         //  Else, return errors
         return back()->withErrors([
-            'username' => 'Incorrect username or password.',
+            'name' => 'Incorrect name or password.',
         ])->withInput();
     }
 
@@ -36,17 +47,13 @@ class AuthController extends Controller
     //  Register/create new user
     public function register(Request $request)
     {
-        $postData = $request->validate([
-            'username' => 'required|string|max:100',
+        $post_data = $request->validate([
+            'name' => 'required|string|max:100|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        $User = User::create([
-            'username' => $postData['username'],
-            'email' => $postData['email'],
-            'password' => Hash::make($postData['password']),
-        ]);
+        $User = $this->auth_service->register($post_data);
 
         Auth::login($User);
 
@@ -56,10 +63,7 @@ class AuthController extends Controller
     //  Logout
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
+        $this->auth_service->logout($request);
         return redirect('/login');
     }
 }
