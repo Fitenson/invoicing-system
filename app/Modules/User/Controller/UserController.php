@@ -5,7 +5,7 @@ namespace App\Modules\User\Controller;
 use App\Common\Controller\BaseController;
 use App\Modules\User\Model\User;
 use App\Modules\User\Service\UserService;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 
 class UserController extends BaseController {
@@ -29,14 +29,50 @@ class UserController extends BaseController {
     }
 
 
-    public function create()
+    public function store(Request $request)
     {
-        return view('user.create');
+        $post_data = $request->validate([
+            'name' => 'required|string|max:100|unique:users',
+            'email' => 'required|email|unique:users',
+        ]);
+
+        $user = $this->user_service->create($post_data);
+
+        return redirect("/user/{$user->id}")->with('success', 'User created successfully!');
     }
 
 
-    public function update()
+
+    public function update(string $id, Request $request)
     {
-        return view('user.update');
+        $post_data = $request->validate([
+            'name' => 'required|string|max:100|unique:users,name,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
+        ]);
+
+        $update_user = $this->user_service->update($id, $post_data);
+
+        if ($update_user) {
+            return redirect()->route('users.show', ['id' => $id])->with('success', 'User updated successfully.');
+        }
+
+
+        return redirect()->back()->with('error', 'Failed to update user.');
+    }
+
+
+
+    public function destroy(string $id)
+    {
+        $result = $this->user_service->destroy($id);
+
+        // Check if deletion was successful
+        if ($result) {
+            // Redirect with success message
+            return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        }
+
+        // If deletion failed
+        return redirect()->back()->with('error', 'Failed to delete user');
     }
 }

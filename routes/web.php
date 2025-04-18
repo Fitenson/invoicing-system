@@ -42,12 +42,18 @@ Route::middleware(['web', 'guest'])->group(function () {
 Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/user', [UserViewController::class, 'index'])->name('users.index');
 
-    Route::get('/user/create', [UserViewController::class, 'create'])->name('users.create');
+    //  User routes
+    Route::prefix('user')->as('users.')->group(function () {
+        Route::get('/', [UserViewController::class, 'index'])->name('index');
 
-    Route::get('/user/{id}', [UserViewController::class, 'show'])->name('users.show');
+        //  Create routes
+        Route::get('/create', [UserViewController::class, 'create'])->name('create');
+        Route::post('/store', [UserController::class, 'store'])->name('store');
 
+        Route::get('/{id}', [UserViewController::class, 'show'])->name('show');
+        Route::put('/update/{id}', [UserController::class, 'update'])->name('update');
 
-    Route::get('/user/update/{id}', [UserViewController::class, 'update'])->name('users.update');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+    });
 });

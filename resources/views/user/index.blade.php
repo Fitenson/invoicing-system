@@ -1,5 +1,6 @@
 @extends('dashboard.app')
 
+
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,6 +11,7 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
+                        <a href="{{ route('users.create') }}" class="btn btn-success create-btn m-2 mx-2">Create</a>
                     <thead class="bg-light">
                         <tr>
                             <th scope="col">Name</th>
@@ -42,7 +44,13 @@
                                         <a href="{{ route('users.show', $user->id) }}" class="btn btn-warning edit-btn" data-id="{{ $user->id }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button type="button" class="btn btn-danger delete-btn" data-id="{{ $user->id }}">
+
+                                        <form id="delete-form-{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+
+                                        <button type="button" class="btn btn-danger delete-btn" onclick="document.getElementById('delete-form-{{ $user->id }}').submit();">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -92,10 +100,10 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Row selection and highlighting
@@ -105,9 +113,11 @@
         const viewSelectedBtn = document.getElementById('viewSelected');
         const editSelectedBtn = document.getElementById('editSelected');
         const userRows = document.querySelectorAll('.user-row');
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        const deleteModalElement = document.getElementById('deleteModal');
+        const deleteModal = new bootstrap.Modal(deleteModalElement);
         const deleteForm = document.getElementById('deleteForm');
         const columnSearchInputs = document.querySelectorAll('.column-search');
+
 
         // Handle select all checkbox
         selectAll.addEventListener('change', function() {
@@ -178,54 +188,46 @@
             });
         });
 
+
         // Individual delete buttons
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const userId = this.getAttribute('data-id');
-                deleteForm.action = `/users/${userId}`;
-                deleteModal.show();
-            });
-        });
+// Add event listeners to all delete buttons
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const userId = this.getAttribute('data-id');
+        destroyUser(userId);
+    });
+});
 
-        // Handle the delete selected button
-        deleteSelectedBtn.addEventListener('click', function() {
-            const selectedIds = Array.from(rowCheckboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
-
-            if (selectedIds.length > 0) {
-                // For multiple deletes, you would typically use a bulk delete endpoint
-                deleteForm.action = "/users/bulk-delete";
-
-                // Add selected IDs as hidden inputs
-                deleteForm.innerHTML = ''; // Clear previous inputs
-                selectedIds.forEach(id => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'ids[]';
-                    input.value = id;
-                    deleteForm.appendChild(input);
-                });
-
-                // Add CSRF token
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_token';
-                csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                deleteForm.appendChild(csrfInput);
-
-                // Add method field
-                const methodInput = document.createElement('input');
-                methodInput.type = 'hidden';
-                methodInput.name = '_method';
-                methodInput.value = 'DELETE';
-                deleteForm.appendChild(methodInput);
-
-                deleteModal.show();
+// Function to handle user deletion
+function destroyUser(userId) {
+    // Create a POST request with CSRF protection (for Laravel)
+    fetch(`/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Remove the user row from the DOM or refresh the page
+            const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+            if (userRow) {
+                userRow.remove();
+            } else {
+                // If can't find the specific row, reload the page
+                window.location.reload();
             }
-        });
+        } else {
+            console.error('Failed to delete user');
+            alert('Failed to delete user');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the user');
+    });
+}
 
         // View selected button - navigate to show page
         viewSelectedBtn.addEventListener('click', function() {

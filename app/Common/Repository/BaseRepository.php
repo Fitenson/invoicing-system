@@ -9,13 +9,39 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 abstract class BaseRepository {
     /**
      *  @param string $class_name   Class name of a model. Example: User::class
+     *  @param string $id       ID of the record
+     *
+     *  @return Model $model    Return model
+    */
+    public function findById(string $class_name, string $id): Model
+    {
+        $model = $class_name::findOrFail($id);
+        return $model;
+    }
+
+
+    /**
+     *  @param string $class_name   Class name of a model. Example: User::class
      *  @param array $data  POST data for the system to save
      *
      *  @return Model $model
     */
-    public function create(string $class_name, array $data)
+    public function create(string $class_name, array $data): Model
     {
         $model = $class_name::create($data);
+        return $model;
+    }
+
+
+    /**
+     *  @param Model $model     Model that needs to be update
+     *  @param array $data      New data
+     *
+     *  @return Model $model
+    */
+    public function update(Model $model, array $data): bool
+    {
+        $model = $model->update($data);
         return $model;
     }
 
@@ -85,5 +111,23 @@ abstract class BaseRepository {
         }
 
         return $model->toArray();
+    }
+
+
+    /**
+     *  @param string $id   ID of the record user wants to delete
+     *
+     *  @return Model $model
+     * */
+    public function destroy(string $class_name, string $id): bool
+    {
+        $model = $class_name::find($id);
+
+        if (!$model) {
+            // Handle case where the model with the given ID does not exist
+            throw new \Exception("Model with ID {$id} not found.");
+        }
+
+        return $model->delete();
     }
 }

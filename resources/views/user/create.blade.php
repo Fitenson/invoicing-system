@@ -8,14 +8,14 @@
             <i class="fas fa-times me-1"></i> Cancel
         </a>
         <button form="createUserForm" type="submit" class="btn btn-success">
-            <i class="fas fa-save me-1"></i> Create Client
+            <i class="fas fa-save me-1"></i> Create
         </button>
     </div>
 
     <h3 class="mb-4">Create New Client</h3>
 
     <!-- Form Section -->
-    <form id="createUserForm" action="{{ route('users.create') }}" method="POST">
+    <form id="createUserForm" action="{{ route('users.store') }}" method="POST">
         @csrf
 
         <!-- Username/Login Name -->
