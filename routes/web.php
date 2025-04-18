@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 
 /**
+ *  View Controllers
+ */
+use App\Modules\Auth\Controller\AuthViewController;
+use App\Modules\User\Controller\UserViewController;
+
+/**
  *  Controllers
 */
 use App\Modules\Auth\Controller\AuthController;
@@ -24,10 +30,10 @@ use App\Modules\User\Controller\UserController;
 // Guest routes
 // Guest routes (web + guest)
 Route::middleware(['web', 'guest'])->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', [AuthViewController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::get('/register', [AuthViewController::class, 'register'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 });
 
@@ -35,12 +41,13 @@ Route::middleware(['web', 'guest'])->group(function () {
 // Protected routes (web + auth)
 Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/user', [UserController::class, 'index'])->name('users.index');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/user', [UserViewController::class, 'index'])->name('users.index');
 
-    Route::get('/user/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/user/create', [UserViewController::class, 'create'])->name('users.create');
 
-    Route::get('/user/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/user/{id}', [UserViewController::class, 'show'])->name('users.show');
 
-    Route::get('/user/update/{id}', [UserController::class, 'update'])->name('users.update');
+
+    Route::get('/user/update/{id}', [UserViewController::class, 'update'])->name('users.update');
 });

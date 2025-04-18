@@ -19,22 +19,6 @@ class AuthController extends Controller
         $this->auth_service = $auth_service;
     }
 
-    // Show login form
-    public function showLoginForm()
-    {
-        if (auth()->check()) {
-            return redirect()->route('/dashboard');
-        }
-
-        return view('auth.login');
-    }
-
-    // Show register form
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
-
     // Login and return Sanctum token
     public function login(Request $request)
     {
@@ -46,7 +30,7 @@ class AuthController extends Controller
         $login = $this->auth_service->login($post_data);
 
         if($login) {
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/');
         }
 
         return back()->withErrors([
@@ -66,7 +50,7 @@ class AuthController extends Controller
 
         $this->auth_service->register($data);
 
-        return redirect('/dashboard');
+        return redirect('/');
     }
 
     // Logout and revoke tokens

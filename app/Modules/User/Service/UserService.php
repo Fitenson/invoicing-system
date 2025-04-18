@@ -15,12 +15,19 @@ class UserService extends BaseService {
     }
 
 
-    public function getPaginated($params)
+    public function getPaginated(array $params)
     {
         $selects = [
             '*'
         ];
 
         return $this->user_repository->getPaginated(User::class, $params, $selects);
+    }
+
+
+    public function show(string $id)
+    {
+        $user = $this->user_repository->show(User::class, $id);
+        return $user;
     }
 }

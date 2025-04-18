@@ -4,73 +4,48 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Clients</h2>
-        <div>
-            <a href="{{ route('users.create') }}" class="btn btn-success">
-                <i class="fas fa-plus me-1"></i> New Client
-            </a>
-        </div>
     </div>
 
     <div class="card shadow-sm">
-        <div class="card-header bg-light py-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <button id="deleteSelected" class="btn btn-danger" disabled>
-                        <i class="fas fa-trash me-1"></i> Delete Selected
-                    </button>
-                    <button id="editSelected" class="btn btn-primary ms-2" disabled>
-                        <i class="fas fa-edit me-1"></i> Edit Selected
-                    </button>
-                </div>
-                <div>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Search clients...">
-                        <button class="btn btn-outline-secondary" type="button">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th scope="col" width="40">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="selectAll">
-                                </div>
-                            </th>
-                            <th scope="col">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Joined Date</th>
-                            <th scope="col" class="text-end">Actions</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        <!-- Column search fields -->
+                        <tr class="column-filters">
+                            <th>
+                                <input type="text" class="form-control form-control-sm column-search" data-column="name" placeholder="Search name...">
+                            </th>
+                            <th>
+                                <input type="text" class="form-control form-control-sm column-search" data-column="email" placeholder="Search email...">
+                            </th>
+                            <th>
+                                <input type="text" class="form-control form-control-sm column-search" data-column="date" placeholder="Search date...">
+                            </th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($users as $index => $user)
                             <tr class="user-row" data-id="{{ $user->id }}">
-                                <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input row-checkbox" type="checkbox" value="{{ $user->id }}">
-                                    </div>
-                                </td>
-                                <td>{{ $users->firstItem() + $index }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->created_at->format('M d, Y') }}</td>
-                                <td class="text-end">
-                                    <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-outline-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-id="{{ $user->id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                <td>{{ $user->created_at->format('d M  Y') }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-warning edit-btn" data-id="{{ $user->id }}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-danger delete-btn" data-id="{{ $user->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -127,10 +102,12 @@
         const selectAll = document.getElementById('selectAll');
         const rowCheckboxes = document.querySelectorAll('.row-checkbox');
         const deleteSelectedBtn = document.getElementById('deleteSelected');
+        const viewSelectedBtn = document.getElementById('viewSelected');
         const editSelectedBtn = document.getElementById('editSelected');
         const userRows = document.querySelectorAll('.user-row');
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         const deleteForm = document.getElementById('deleteForm');
+        const columnSearchInputs = document.querySelectorAll('.column-search');
 
         // Handle select all checkbox
         selectAll.addEventListener('change', function() {
@@ -156,9 +133,56 @@
             });
         });
 
+        // Edit button functionality
+        editSelectedBtn.addEventListener('click', function() {
+            const selectedIds = Array.from(rowCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            if (selectedIds.length === 1) {
+                window.location.href = `/users/${selectedIds[0]}/edit`;
+            }
+        });
+
+        // Make entire row clickable to toggle checkbox
+        userRows.forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't toggle if clicking on a button or link
+                if (e.target.type !== 'checkbox' &&
+                    !e.target.closest('.form-check') &&
+                    !e.target.closest('.btn') &&
+                    !e.target.closest('a')) {
+                    const checkbox = this.querySelector('.row-checkbox');
+                    checkbox.checked = !checkbox.checked;
+
+                    // Trigger the change event to run our event handlers
+                    const event = new Event('change');
+                    checkbox.dispatchEvent(event);
+                }
+            });
+        });
+
+        // Double click on row to view user directly
+        userRows.forEach(row => {
+            row.addEventListener('dblclick', function() {
+                const userId = this.getAttribute('data-id');
+                window.location.href = `/users/${userId}`;
+            });
+        });
+
+        // Individual edit buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const userId = this.getAttribute('data-id');
+                window.location.href = `/users/${userId}/edit`;
+            });
+        });
+
         // Individual delete buttons
         document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 const userId = this.getAttribute('data-id');
                 deleteForm.action = `/users/${userId}`;
                 deleteModal.show();
@@ -203,14 +227,14 @@
             }
         });
 
-        // Edit selected button
-        editSelectedBtn.addEventListener('click', function() {
+        // View selected button - navigate to show page
+        viewSelectedBtn.addEventListener('click', function() {
             const selectedIds = Array.from(rowCheckboxes)
                 .filter(cb => cb.checked)
                 .map(cb => cb.value);
 
             if (selectedIds.length === 1) {
-                window.location.href = `/users/${selectedIds[0]}/edit`;
+                window.location.href = `/users/${selectedIds[0]}`;
             }
         });
 
@@ -227,18 +251,61 @@
         function updateActionButtons() {
             const selectedCount = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
             deleteSelectedBtn.disabled = selectedCount === 0;
+            viewSelectedBtn.disabled = selectedCount !== 1;
             editSelectedBtn.disabled = selectedCount !== 1;
         }
 
-        // Search functionality
+        // Main search functionality
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('keyup', function() {
-            const searchTerm = this.value.toLowerCase();
-            userRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            filterTable();
+        });
+
+        // Column search functionality
+        columnSearchInputs.forEach(input => {
+            input.addEventListener('keyup', function() {
+                filterTable();
             });
         });
+
+        // Combined filter function for both main search and column search
+        function filterTable() {
+            const mainSearchTerm = searchInput.value.toLowerCase();
+            const columnFilters = {};
+
+            // Gather all column filter values
+            columnSearchInputs.forEach(input => {
+                const column = input.getAttribute('data-column');
+                const value = input.value.toLowerCase();
+                if (value) {
+                    columnFilters[column] = value;
+                }
+            });
+
+            userRows.forEach(row => {
+                const rowData = {
+                    name: row.querySelector('td:nth-child(2)').textContent.toLowerCase(),
+                    email: row.querySelector('td:nth-child(3)').textContent.toLowerCase(),
+                    date: row.querySelector('td:nth-child(4)').textContent.toLowerCase()
+                };
+
+                // Check if row matches the main search
+                const matchesMainSearch = mainSearchTerm === '' ||
+                    Object.values(rowData).some(text => text.includes(mainSearchTerm));
+
+                // Check if row matches all column filters
+                let matchesColumnFilters = true;
+                for (const [column, value] of Object.entries(columnFilters)) {
+                    if (column in rowData && !rowData[column].includes(value)) {
+                        matchesColumnFilters = false;
+                        break;
+                    }
+                }
+
+                // Show row only if it matches both main search and column filters
+                row.style.display = (matchesMainSearch && matchesColumnFilters) ? '' : 'none';
+            });
+        }
     });
 </script>
 @endpush

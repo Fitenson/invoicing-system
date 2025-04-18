@@ -3,12 +3,11 @@
 namespace App\Modules\User\Controller;
 
 use App\Common\Controller\BaseController;
-use App\Modules\User\Model\User;
 use App\Modules\User\Service\UserService;
 use Illuminate\Support\Facades\Request;
 
 
-class UserController extends BaseController {
+class UserViewController extends BaseController {
     private UserService $user_service;
 
     public function __construct(UserService $user_service) {
@@ -29,14 +28,14 @@ class UserController extends BaseController {
     }
 
 
-    public function create()
-    {
+    public function create() {
         return view('user.create');
     }
 
 
-    public function update()
-    {
-        return view('user.update');
+    public function show(string $id) {
+        $user = $this->user_service->show($id);
+
+        return view('user.show', compact('user'));
     }
 }
