@@ -40,12 +40,14 @@ abstract class BaseRepository {
         $perPage = $params['per_page'] ?? 10;
         $paginated = $query->paginate($perPage);
 
-        return [
-            'total' => $paginated->total(),
-            'rows' => $paginated->items(),
-            // 'current_page' => $paginated->currentPage(),
-            // 'last_page' => $paginated->lastPage(),
-            // 'per_page' => $paginated->perPage(),
-        ];
+        return $paginated;
+
+        // return [
+        //     'total' => $paginated->total(),
+        //     'rows' => $paginated->items(),
+        //     // 'current_page' => $paginated->currentPage(),
+        //     // 'last_page' => $paginated->lastPage(),
+        //     // 'per_page' => $paginated->perPage(),
+        // ];
     }
 }

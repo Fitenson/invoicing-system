@@ -36,5 +36,11 @@ Route::middleware(['web', 'guest'])->group(function () {
 Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/user', [UserController::class, 'index'])->name('user');
+    Route::get('/user', [UserController::class, 'index'])->name('users.index');
+
+    Route::get('/user/{id}', [UserController::class, 'show'])->name('users.show');
+
+    Route::get('/user/create', [UserController::class, 'create'])->name('users.create');
+
+    Route::get('/user/update/{id}', [UserController::class, 'update'])->name('users.update');
 });
