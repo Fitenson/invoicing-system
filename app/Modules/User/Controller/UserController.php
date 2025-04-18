@@ -48,6 +48,8 @@ class UserController extends BaseController {
         $post_data = $request->validate([
             'name' => 'required|string|max:100|unique:users,name,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
+            'full_name' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
         ]);
 
         $update_user = $this->user_service->update($id, $post_data);
