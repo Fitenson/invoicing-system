@@ -5,13 +5,13 @@ use Illuminate\Support\Facades\Route;
 /**
  *  Views Controller
 */
-use App\Modules\Auth\AuthViewController;
-use App\Modules\Dashboard\DashboardViewController;
+use App\Modules\Auth\Controller\AuthViewController;
+use App\Modules\Dashboard\Controller\DashboardViewController;
 
 /**
  *  Functions Controller
 */
-use App\Modules\Auth\AuthController;
+use App\Modules\Auth\Controller\AuthController;
 
 /*
 |--------------------------------------------------------------------------
