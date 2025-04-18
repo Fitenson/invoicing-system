@@ -9,18 +9,33 @@ use App\Modules\User\Model\User;
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Service\AuthService;
 
+
 class AuthController extends Controller
 {
     private AuthService $auth_service;
-
 
     public function __construct(AuthService $auth_service)
     {
         $this->auth_service = $auth_service;
     }
 
+    // Show login form
+    public function showLoginForm()
+    {
+        if (auth()->check()) {
+            return redirect()->route('/dashboard');
+        }
 
-    //  Login function
+        return view('auth.login');
+    }
+
+    // Show register form
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    // Login and return Sanctum token
     public function login(Request $request)
     {
         $post_data = $request->validate([
@@ -28,39 +43,33 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $login = $this->auth_service->login($post_data, $request);
+        $login = $this->auth_service->login($post_data);
 
-        //  If success, go to dashboard
-        if ($login) {
-            $request->session()->regenerate();
+        if($login) {
             return redirect()->intended('/dashboard');
         }
 
-
-        //  Else, return errors
         return back()->withErrors([
             'name' => 'Incorrect name or password.',
         ])->withInput();
     }
 
 
-    //  Register/create new user
+    // Register and return Sanctum token
     public function register(Request $request)
     {
-        $post_data = $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:100|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        $User = $this->auth_service->register($post_data);
-
-        Auth::login($User);
+        $this->auth_service->register($data);
 
         return redirect('/dashboard');
     }
 
-    //  Logout
+    // Logout and revoke tokens
     public function logout(Request $request)
     {
         $this->auth_service->logout($request);

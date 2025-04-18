@@ -17,7 +17,7 @@ class UserController extends BaseController {
     public function index(Request $request)
     {
         $params = $request->all('param');
-
-        return $this->user_service->getPaginated($params);
+        $users = $this->user_service->getPaginated($params);
+        return view('user.index', compact('users'));
     }
 }

@@ -20,14 +20,20 @@ class AuthService extends BaseService {
     }
 
 
-    public function login(array $post_data, Request $request)
+    public function login(array $post_data)
     {
-        if (Auth::attempt($post_data)) {
-            $request->session()->regenerate();
-            return true;
+        $User = User::where('name', $post_data['name'])->first();
+
+        if(empty($User) || !Hash::check($post_data['password'], $User->password)) {
+            return false;
         }
 
-        return false;
+        Auth::login($User); // For frontend blade session
+        $token = $User->createToken('web')->plainTextToken;
+
+        session(['sanctum_token' => $token]);
+
+        return true;
     }
 
 
@@ -39,6 +45,11 @@ class AuthService extends BaseService {
             'password' => Hash::make($post_data['password']),
         ]);
 
+        Auth::login($User);
+        $token = $User->createToken('web')->plainTextToken;
+
+        session(['sanctum_token' => $token]);
+
 
         return $User;
     }
@@ -46,9 +57,9 @@ class AuthService extends BaseService {
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        Auth::guard('web')->logout();
+        session()->invalidate();
+        session()->regenerateToken();
 
         return true;
     }

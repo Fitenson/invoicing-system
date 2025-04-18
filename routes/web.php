@@ -3,15 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 /**
- *  Views Controller
-*/
-use App\Modules\Auth\Controller\AuthViewController;
-use App\Modules\Dashboard\Controller\DashboardViewController;
-
-/**
- *  Functions Controller
+ *  Controllers
 */
 use App\Modules\Auth\Controller\AuthController;
+use App\Modules\Dashboard\Controller\DashboardController;
+use App\Modules\User\Controller\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,24 +21,20 @@ use App\Modules\Auth\Controller\AuthController;
 */
 
 // Redirect root URL
-Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
+// Guest routes
+// Guest routes (web + guest)
+Route::middleware(['web', 'guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
-// View Routes (only for guests)
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthViewController::class, 'login'])->name('login');
-    Route::get('/register', [AuthViewController::class, 'register'])->name('register');
+
+// Protected routes (web + auth)
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/user', [UserController::class, 'index'])->name('user');
 });
-
-// Action Routes
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
-
-// Dashboard Route (only for authenticated users)
-Route::get('/dashboard', [DashboardViewController::class, 'index'])
-    ->name('dashboard')
-    ->middleware('auth');

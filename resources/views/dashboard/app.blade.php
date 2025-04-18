@@ -33,7 +33,7 @@
         <h4 class="text-white text-center mb-4">My App</h4>
 
         <a href="{{ url('/') }}" class="text-white mb-2 text-decoration-none">Dashboard</a>
-        <a href="#" class="text-white mb-2 text-decoration-none">Clients</a>
+        <a href="/user" class="text-white mb-2 text-decoration-none">Clients</a>
         <a href="#" class="text-white mb-2 text-decoration-none">Projects</a>
         <a href="#" class="text-white mb-2 text-decoration-none">Invoices</a>
 
