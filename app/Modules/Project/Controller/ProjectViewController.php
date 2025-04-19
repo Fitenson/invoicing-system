@@ -5,7 +5,7 @@ namespace App\Modules\Project\Controller;
 use App\Common\Controller\BaseController;
 use App\Modules\Project\Service\ProjectService;
 use App\Modules\User\Service\UserService;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 
 class ProjectViewController extends BaseController {
@@ -20,11 +20,19 @@ class ProjectViewController extends BaseController {
 
     public function index(Request $request)
     {
-        // $params = $request->only('param');
-        $params = [
-            'sort_by' => 'created_at',
-            'sort_order' => 'desc'
-        ];
+        $params = $request->only([
+            'search',
+            'status',
+            'user_id',
+            'sort_by',
+            'sort_order',
+            'per_page'
+        ]);
+
+        // Set defaults if not provided
+        $params['sort_by'] ??= 'created_at';
+        $params['sort_order'] ??= 'desc';
+
 
         $projects = $this->project_service->getPaginated($params);
         return view('project.index', compact('projects'));

@@ -38,8 +38,8 @@ class Project extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'project',
         'name',
+        'client',
         'description',
         'rate_per_hour',
         'total_hours',

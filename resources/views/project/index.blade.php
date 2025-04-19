@@ -15,39 +15,36 @@
                     <thead class="bg-light">
                         <tr>
                             <th scope="col">Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Client</th>
                             <th scope="col">Rate/Hour</th>
                             <th scope="col">Total Hour</th>
                             <th scope="col">Created At</th>
+                            <th scope="col">Created By</th>
+                            <th scope="col">Updated At</th>
+                            <th scope="col">Updated By</th>
                             <th scope="col">Actions</th>
-                        </tr>
-                        <!-- Column search fields -->
-                        <tr class="column-filters">
-                            <th>
-                                <input type="text" class="form-control form-control-sm column-search" data-column="name" placeholder="Search name...">
-                            </th>
-                            <th>
-                                <input type="text" class="form-control form-control-sm column-search" data-column="rate_per_hour" placeholder="Search rate/hour...">
-                            </th>
-                            <th>
-                                <input type="text" class="form-control form-control-sm column-search" data-column="total_hour" placeholder="Search total hour...">
-                            </th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($projects as $index => $project)
                             <tr class="user-row" data-id="{{ $project->id }}">
                                 <td>{{ $project->name }}</td>
+                                <td>{{ $project->description }}</td>
+                                <td>{{ $project->client_name }}</td>
                                 <td>{{ $project->rate_per_hour }}</td>
-                                <td>{{ $project->total_hour }}</td>
+                                <td>{{ $project->total_hours }}</td>
                                 <td>{{ $project->created_at->format('d M  Y') }}</td>
+                                <td>{{ $project->created_by_name }}</td>
+                                <td>{{ $project->updated_at->format('d M  Y') }}</td>
+                                <td>{{ $project->updated_by_name }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ route('users.show', $project->id) }}" class="btn btn-warning edit-btn" data-id="{{ $project->id }}">
+                                        <a href="{{ route('projects.show', $project->id) }}" class="btn btn-warning edit-btn" data-id="{{ $project->id }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
-                                        <form id="delete-form-{{ $project->id }}" action="{{ route('users.destroy', $project->id) }}" method="POST" style="display: none;">
+                                        <form id="delete-form-{{ $project->id }}" action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display: none;">
                                             @csrf
                                             @method('DELETE')
                                         </form>
@@ -60,7 +57,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">No projects found.</td>
+                                <td colspan="10" class="text-center py-4">No projects found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -86,186 +83,44 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Row selection and highlighting
-        const selectAll = document.getElementById('selectAll');
-        const rowCheckboxes = document.querySelectorAll('.row-checkbox');
-        const deleteSelectedBtn = document.getElementById('deleteSelected');
-        const viewSelectedBtn = document.getElementById('viewSelected');
-        const editSelectedBtn = document.getElementById('editSelected');
-        const userRows = document.querySelectorAll('.user-row');
-        const columnSearchInputs = document.querySelectorAll('.column-search');
-
-
-        // Handle select all checkbox
-        selectAll.addEventListener('change', function() {
-            const isChecked = this.checked;
-            rowCheckboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
-                updateRowHighlight(checkbox);
-            });
-            updateActionButtons();
-        });
-
-        // Handle individual row checkboxes
-        rowCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                updateRowHighlight(this);
-                updateActionButtons();
-
-                // Update "select all" checkbox status
-                const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
-                const someChecked = Array.from(rowCheckboxes).some(cb => cb.checked);
-                selectAll.checked = allChecked;
-                selectAll.indeterminate = someChecked && !allChecked;
-            });
-        });
-
-        // Edit button functionality
-        editSelectedBtn.addEventListener('click', function() {
-            const selectedIds = Array.from(rowCheckboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
-
-            if (selectedIds.length === 1) {
-                window.location.href = `/users/${selectedIds[0]}/edit`;
-            }
-        });
-
-        // Make entire row clickable to toggle checkbox
-        userRows.forEach(row => {
-            row.addEventListener('click', function(e) {
-                // Don't toggle if clicking on a button or link
-                if (e.target.type !== 'checkbox' &&
-                    !e.target.closest('.form-check') &&
-                    !e.target.closest('.btn') &&
-                    !e.target.closest('a')) {
-                    const checkbox = this.querySelector('.row-checkbox');
-                    checkbox.checked = !checkbox.checked;
-
-                    // Trigger the change event to run our event handlers
-                    const event = new Event('change');
-                    checkbox.dispatchEvent(event);
-                }
-            });
-        });
-
-        // Double click on row to view user directly
-        userRows.forEach(row => {
-            row.addEventListener('dblclick', function() {
-                const userId = this.getAttribute('data-id');
-                window.location.href = `/users/${userId}`;
-            });
-        });
-
-        // Individual edit buttons
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                const userId = this.getAttribute('data-id');
-                window.location.href = `/users/${userId}/edit`;
-            });
-        });
-
-
         // Individual delete buttons
-// Add event listeners to all delete buttons
-document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const userId = this.getAttribute('data-id');
-        destroyUser(userId);
-    });
-});
-
-// Function to handle user deletion
-function destroyUser(userId) {
-    // Create a POST request with CSRF protection (for Laravel)
-    fetch(`/users/${userId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            // Remove the user row from the DOM or refresh the page
-            const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
-            if (userRow) {
-                userRow.remove();
-            } else {
-                // If can't find the specific row, reload the page
-                window.location.reload();
-            }
-        } else {
-            console.error('Failed to delete user');
-            alert('Failed to delete user');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while deleting the user');
-    });
-}
-
-        // View selected button - navigate to show page
-        viewSelectedBtn.addEventListener('click', function() {
-            const selectedIds = Array.from(rowCheckboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
-
-            if (selectedIds.length === 1) {
-                window.location.href = `/users/${selectedIds[0]}`;
-            }
-        });
-
-        // Main search functionality
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('keyup', function() {
-            filterTable();
-        });
-
-        // Column search functionality
-        columnSearchInputs.forEach(input => {
-            input.addEventListener('keyup', function() {
-                filterTable();
+        // Add event listeners to all delete buttons
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-id');
+                destroyUser(userId);
             });
         });
 
-        // Combined filter function for both main search and column search
-        function filterTable() {
-            const mainSearchTerm = searchInput.value.toLowerCase();
-            const columnFilters = {};
 
-            // Gather all column filter values
-            columnSearchInputs.forEach(input => {
-                const column = input.getAttribute('data-column');
-                const value = input.value.toLowerCase();
-                if (value) {
-                    columnFilters[column] = value;
+        // Function to handle user deletion
+        function destroyUser(userId) {
+            // Create a POST request with CSRF protection (for Laravel)
+            fetch(`/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
-            });
-
-            userRows.forEach(row => {
-                const rowData = {
-                    name: row.querySelector('td:nth-child(2)').textContent.toLowerCase(),
-                    email: row.querySelector('td:nth-child(3)').textContent.toLowerCase(),
-                    date: row.querySelector('td:nth-child(4)').textContent.toLowerCase()
-                };
-
-                // Check if row matches the main search
-                const matchesMainSearch = mainSearchTerm === '' ||
-                    Object.values(rowData).some(text => text.includes(mainSearchTerm));
-
-                // Check if row matches all column filters
-                let matchesColumnFilters = true;
-                for (const [column, value] of Object.entries(columnFilters)) {
-                    if (column in rowData && !rowData[column].includes(value)) {
-                        matchesColumnFilters = false;
-                        break;
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Remove the user row from the DOM or refresh the page
+                    const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+                    if (userRow) {
+                        userRow.remove();
+                    } else {
+                        // If can't find the specific row, reload the page
+                        window.location.reload();
                     }
+                } else {
+                    console.error('Failed to delete user');
+                    alert('Failed to delete user');
                 }
-
-                // Show row only if it matches both main search and column filters
-                row.style.display = (matchesMainSearch && matchesColumnFilters) ? '' : 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the user');
             });
         }
     });

@@ -32,13 +32,15 @@ class ProjectController extends BaseController {
     {
         $post_data = $request->validate([
             'name' => 'nullable|string|max:100',
-            'email' => 'max:100',
-            'address' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
+            'client' => 'nullable|string',
+            'rate_per_hour' => 'nullable|string',
+            'total_hours' => 'nullable|string',
         ]);
 
-        $user = $this->project_service->create($post_data);
+        $project = $this->project_service->create($post_data);
 
-        return redirect("/user/{$user->id}")->with('success', 'User created successfully!');
+        return redirect("/project/{$project->id}")->with('success', 'Project created successfully!');
     }
 
 
@@ -46,20 +48,21 @@ class ProjectController extends BaseController {
     public function update(string $id, Request $request)
     {
         $post_data = $request->validate([
-            'name' => 'required|string|max:100|unique:users,name,' . $id,
-            'email' => 'required|email|unique:users,email,' . $id,
-            'full_name' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
+            'name' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:255',
+            'client' => 'nullable|exists:users,id',
+            'rate_per_hour' => 'nullable|string',
+            'total_hours' => 'nullable|string',
         ]);
 
-        $update_user = $this->project_service->update($id, $post_data);
+        $update_project = $this->project_service->update($id, $post_data);
 
-        if ($update_user) {
-            return redirect()->route('users.show', ['id' => $id])->with('success', 'User updated successfully.');
+        if ($update_project) {
+            return redirect()->route('projects.show', ['id' => $id])->with('success', 'Project updated successfully.');
         }
 
 
-        return redirect()->back()->with('error', 'Failed to update user.');
+        return redirect()->back()->with('error', 'Failed to update project.');
     }
 
 
@@ -71,7 +74,7 @@ class ProjectController extends BaseController {
         // Check if deletion was successful
         if ($result) {
             // Redirect with success message
-            return redirect()->route('users.index')->with('success', 'User deleted successfully');
+            return redirect()->route('projects.index')->with('success', 'User deleted successfully');
         }
 
         // If deletion failed

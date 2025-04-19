@@ -5,7 +5,7 @@ namespace App\Modules\Project\Service;
 use App\Common\Service\BaseService;
 use App\Modules\Project\Repository\ProjectRepository;
 use App\Modules\Project\Model\Project;
-
+use App\Modules\User\Model\User;
 
 
 class ProjectService extends BaseService {
@@ -20,7 +20,10 @@ class ProjectService extends BaseService {
     public function getPaginated(array $params)
     {
         $selects = [
-            '*'
+            '*',
+            'client_name' => User::select(['name'])->whereColumn('users.id', 'projects.client'),
+            'created_by_name' => User::select(['name'])->whereColumn('users.id', 'projects.created_by'),
+            'updated_by_name' => User::select(['name'])->whereColumn('users.id', 'projects.updated_by'),
         ];
 
         return $this->project_repository->getPaginated(Project::class, $params, $selects);

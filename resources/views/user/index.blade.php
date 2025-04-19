@@ -16,21 +16,11 @@
                         <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Joined Date</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Created By</th>
+                            <th scope="col">Updated At</th>
+                            <th scope="col">Updated By</th>
                             <th scope="col">Actions</th>
-                        </tr>
-                        <!-- Column search fields -->
-                        <tr class="column-filters">
-                            <th>
-                                <input type="text" class="form-control form-control-sm column-search" data-column="name" placeholder="Search name...">
-                            </th>
-                            <th>
-                                <input type="text" class="form-control form-control-sm column-search" data-column="email" placeholder="Search email...">
-                            </th>
-                            <th>
-                                <input type="text" class="form-control form-control-sm column-search" data-column="date" placeholder="Search date...">
-                            </th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,7 +28,10 @@
                             <tr class="user-row" data-id="{{ $user->id }}">
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->created_by_name }}</td>
                                 <td>{{ $user->created_at->format('d M  Y') }}</td>
+                                <td>{{ $user->updated_by_name }}</td>
+                                <td>{{ $user->updated_at->format('d M  Y') }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ route('users.show', $user->id) }}" class="btn btn-warning edit-btn" data-id="{{ $user->id }}">

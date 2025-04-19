@@ -48,8 +48,8 @@
         <!-- Description -->
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <input type="description" class="form-control @error('description') is-invalid @enderror"
-                id="description" name="description" value="{{ old('description') }}" required>
+            <textarea type="description" class="form-control @error('description') is-invalid @enderror"
+                id="description" name="description" value="{{ old('description') }}" rows="3"></textarea>
             @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

@@ -2,11 +2,12 @@
 
 namespace App\Modules\User\Service;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 use App\Common\Service\BaseService;
 use App\Modules\User\Repository\UserRepository;
 use App\Modules\User\Model\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 
 class UserService extends BaseService {
@@ -20,7 +21,9 @@ class UserService extends BaseService {
     public function getPaginated(array $params)
     {
         $selects = [
-            '*'
+            '*',
+            DB::raw('(SELECT name FROM users AS u1 WHERE u1.id = users.created_by LIMIT 1) as created_by_name'),
+            DB::raw('(SELECT name FROM users AS u2 WHERE u2.id = users.updated_by LIMIT 1) as updated_by_name'),
         ];
 
         return $this->user_repository->getPaginated(User::class, $params, $selects);
