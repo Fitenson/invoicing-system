@@ -45,6 +45,12 @@ class ProjectService extends BaseService {
     }
 
 
+    public function findAll()
+    {
+        return $this->project_repository->findAll(Project::class);
+    }
+
+
     public function update(string $id, array $data)
     {
         $project = $this->project_repository->findById(Project::class, $id);

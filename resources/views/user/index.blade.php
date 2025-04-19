@@ -14,24 +14,22 @@
                         <a href="{{ route('users.create') }}" class="btn btn-success create-btn m-2 mx-2">Create</a>
                     <thead class="bg-light">
                         <tr>
+                            <th scope="col">Actions</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Full Name</th>
                             <th scope="col">Email</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Company</th>
+                            <th scope="col">Phone no</th>
                             <th scope="col">Created At</th>
                             <th scope="col">Created By</th>
                             <th scope="col">Updated At</th>
                             <th scope="col">Updated By</th>
-                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($users as $index => $user)
                             <tr class="user-row" data-id="{{ $user->id }}">
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->created_by_name }}</td>
-                                <td>{{ $user->created_at->format('d M  Y') }}</td>
-                                <td>{{ $user->updated_by_name }}</td>
-                                <td>{{ $user->updated_at->format('d M  Y') }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ route('users.show', $user->id) }}" class="btn btn-warning edit-btn" data-id="{{ $user->id }}">
@@ -48,6 +46,16 @@
                                         </button>
                                     </div>
                                 </td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->full_name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->address }}</td>
+                                <td>{{ $user->company }}</td>
+                                <td>{{ $user->phone_number }}</td>
+                                <td>{{ $user->created_by_name }}</td>
+                                <td>{{ $user->created_at->format('d M  Y') }}</td>
+                                <td>{{ $user->updated_by_name }}</td>
+                                <td>{{ $user->updated_at->format('d M  Y') }}</td>
                             </tr>
                         @empty
                             <tr>

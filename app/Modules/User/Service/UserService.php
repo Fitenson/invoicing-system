@@ -4,6 +4,7 @@ namespace App\Modules\User\Service;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 use App\Common\Service\BaseService;
 use App\Modules\User\Repository\UserRepository;

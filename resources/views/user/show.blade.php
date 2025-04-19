@@ -49,6 +49,26 @@
             @enderror
         </div>
 
+        <!-- Phone number -->
+        <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone Number</label>
+            <input type="text" class="form-control @error('phone_number') is-invalid @enderror"
+                id="phone_number" name="phone_number" value="{{ old('phone_number', $user['phone_number']) }}">
+            @error('phone_number')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Company -->
+        <div class="mb-3">
+            <label for="company" class="form-label">Company</label>
+            <input type="text" class="form-control @error('company') is-invalid @enderror"
+                id="company" name="company" value="{{ old('company', $user['company']) }}">
+            @error('company')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
         <!-- Address -->
         <div class="mb-3">
             <label for="address" class="form-label">Address</label>
@@ -61,18 +81,3 @@
     </form>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const addressField = document.getElementById('address');
-        addressField.addEventListener('blur', function () {
-            this.value = this.value
-                .split('\n')
-                .map(line => line.trim())
-                .filter(line => line)
-                .join('\n');
-        });
-    });
-</script>
-@endpush

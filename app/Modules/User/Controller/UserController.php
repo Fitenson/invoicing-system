@@ -32,13 +32,17 @@ class UserController extends BaseController {
     public function store(Request $request)
     {
         $post_data = $request->validate([
-            'name' => 'required|string|max:100|unique:users',
+            'name' => 'required|string|max:255|unique:users',
             'email' => 'required|email|unique:users',
+            'phone_number' => 'nullable|string|max:100',
+            'full_name' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
         ]);
 
-        $user = $this->user_service->create($post_data);
+        $this->user_service->create($post_data);
 
-        return redirect("/user/{$user->id}")->with('success', 'User created successfully!');
+        return redirect()->route('users.index')->with('success', 'User deleted successfully');
     }
 
 
@@ -48,8 +52,10 @@ class UserController extends BaseController {
         $post_data = $request->validate([
             'name' => 'required|string|max:100|unique:users,name,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
+            'phone_number' => 'nullable|string|max:100',
             'full_name' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
+            'company' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
         ]);
 
         $update_user = $this->user_service->update($id, $post_data);

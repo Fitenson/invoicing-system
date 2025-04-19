@@ -7,7 +7,7 @@
         <a href="{{ route('projects.index') }}" class="btn btn-secondary">
             <i class="fas fa-times me-1"></i> Cancel
         </a>
-        <button form="createUserForm" type="submit" class="btn btn-success">
+        <button form="createProjectForm" type="submit" class="btn btn-success">
             <i class="fas fa-save me-1"></i> Create
         </button>
     </div>
@@ -15,7 +15,7 @@
     <h3 class="mb-4">Create New Project</h3>
 
     <!-- Form Section -->
-    <form id="createUserForm" action="{{ route('projects.store') }}" method="POST">
+    <form id="createProjectForm" action="{{ route('projects.store') }}" method="POST">
         @csrf
 
         <!-- Project Name -->
@@ -30,16 +30,16 @@
 
         <!-- User Dropdown -->
         <div class="mb-3">
-            <label for="user_id" class="form-label">Client</label>
-            <select class="form-select @error('user_id') is-invalid @enderror" id="user_id" name="user_id" required>
+            <label for="client" class="form-label">Client</label>
+            <select class="form-select @error('client') is-invalid @enderror" id="client" name="client" required>
                 <option value="">-- Select Client --</option>
                 @foreach($users as $user)
-                    <option value="{{ $user['id'] }}" {{ old('user_id') == $user['id'] ? 'selected' : '' }}>
+                    <option value="{{ $user['id'] }}" {{ old('client') == $user['id'] ? 'selected' : '' }}>
                         {{ $user['name'] }}
                     </option>
                 @endforeach
             </select>
-            @error('user_id')
+            @error('client')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
@@ -58,17 +58,27 @@
         <!-- Rate per hour -->
         <div class="mb-3">
             <label for="rate_per_hour" class="form-label">Rate / Hour</label>
-            <input type="number" id="rate_per_hour" name="rate_per_hour">{{ old('rate_per_hour') }}</input>
-            @error('rate_per_hour')
+
+        <!-- Rate per hour -->
+        <input type="number"
+           step="0.01"
+           lang="en"
+           inputmode="decimal"
+           class="form-control @error('rate_per_hour') is-invalid @enderror"
+           id="rate_per_hour"
+           name="rate_per_hour"
+           value="{{ old('rate_per_hour', isset($rate_per_hour) ? number_format($rate_per_hour, 2, '.', '') : '') }}">
+                @error('rate_per_hour')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
-
         <!-- Total hour -->
         <div class="mb-3">
             <label for="total_hour" class="form-label">Total Hour</label>
-            <input type="number" id="total_hour" name="total_hour">{{ old('total_hour') }}</input>
+            <input type="number" step="0.01" class="form-control @error('total_hour') is-invalid @enderror"
+                   id="total_hour" name="total_hour"
+                   value="{{ old('total_hour', $total_hour ?? '') }}">
             @error('total_hour')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -76,18 +86,3 @@
     </form>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const addressField = document.getElementById('address');
-        addressField.addEventListener('blur', function () {
-            this.value = this.value
-                .split('\n')
-                .map(line => line.trim())
-                .filter(line => line)
-                .join('\n');
-        });
-    });
-</script>
-@endpush

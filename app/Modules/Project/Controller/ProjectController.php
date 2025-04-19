@@ -38,9 +38,9 @@ class ProjectController extends BaseController {
             'total_hours' => 'nullable|string',
         ]);
 
-        $project = $this->project_service->create($post_data);
+        $this->project_service->create($post_data);
 
-        return redirect("/project/{$project->id}")->with('success', 'Project created successfully!');
+        return redirect()->route('projects.index')->with('success', 'User deleted successfully');
     }
 
 
