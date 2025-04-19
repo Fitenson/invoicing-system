@@ -14,42 +14,42 @@
                         <a href="{{ route('projects.create') }}" class="btn btn-success create-btn m-2 mx-2">Create</a>
                     <thead class="bg-light">
                         <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
+                            <th scope="col">Actions</th>
+                            <th scope="col">Invoice Number</th>
                             <th scope="col">Client</th>
-                            <th scope="col">Rate/Hour</th>
-                            <th scope="col">Total Hour</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Total Projects</th>
+                            <th scope="col">Total Rate/Hour</th>
                             <th scope="col">Created At</th>
                             <th scope="col">Created By</th>
                             <th scope="col">Updated At</th>
                             <th scope="col">Updated By</th>
-                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($projects as $index => $project)
-                            <tr class="user-row" data-id="{{ $project->id }}">
-                                <td>{{ $project->name }}</td>
-                                <td>{{ $project->description }}</td>
-                                <td>{{ $project->client_name }}</td>
-                                <td>{{ $project->rate_per_hour }}</td>
-                                <td>{{ $project->total_hours }}</td>
-                                <td>{{ $project->created_at->format('d M  Y') }}</td>
-                                <td>{{ $project->created_by_name }}</td>
-                                <td>{{ $project->updated_at->format('d M  Y') }}</td>
-                                <td>{{ $project->updated_by_name }}</td>
+                        @forelse($invoices as $index => $invoice)
+                            <tr class="user-row" data-id="{{ $invoice->id }}">
+                                <td>{{ $invoice->invoice_number }}</td>
+                                <td>{{ $invoice->client_name }}</td>
+                                <td>{{ $invoice->description }}</td>
+                                <td>{{ $invoice->total_projects }}</td>
+                                <td>{{ $invoice->total_rate_per_hour }}</td>
+                                <td>{{ $invoice->created_at->format('d M  Y') }}</td>
+                                <td>{{ $invoice->created_by_name }}</td>
+                                <td>{{ $invoice->updated_at->format('d M  Y') }}</td>
+                                <td>{{ $invoice->updated_by_name }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ route('projects.show', $project->id) }}" class="btn btn-warning edit-btn" data-id="{{ $project->id }}">
+                                        <a href="{{ route('projects.show', $invoice->id) }}" class="btn btn-warning edit-btn" data-id="{{ $invoice->id }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
-                                        <form id="delete-form-{{ $project->id }}" action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display: none;">
+                                        <form id="delete-form-{{ $invoice->id }}" action="{{ route('invoices.destroy', $invoice->id) }}" method="POST" style="display: none;">
                                             @csrf
                                             @method('DELETE')
                                         </form>
 
-                                        <button type="button" class="btn btn-danger delete-btn" onclick="document.getElementById('delete-form-{{ $project->id }}').submit();">
+                                        <button type="button" class="btn btn-danger delete-btn" onclick="document.getElementById('delete-form-{{ $invoice->id }}').submit();">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -69,10 +69,10 @@
     {{-- Pagination links --}}
     <div class="d-flex justify-content-between align-items-center mt-3">
         <div>
-            <small class="text-muted">Showing {{ $projects->firstItem() ?? 0 }} to {{ $projects->lastItem() ?? 0 }} of {{ $projects->total() }} entries</small>
+            <small class="text-muted">Showing {{ $invoices->firstItem() ?? 0 }} to {{ $invoices->lastItem() ?? 0 }} of {{ $invoices->total() }} entries</small>
         </div>
         <div>
-            {{ $projects->links() }}
+            {{ $invoices->links() }}
         </div>
     </div>
 </div>

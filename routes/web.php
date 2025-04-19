@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Auth\Controller\AuthViewController;
 use App\Modules\User\Controller\UserViewController;
 use App\Modules\Project\Controller\ProjectViewController;
+use App\Modules\Invoice\Controller\InvoiceViewController;
 
 /**
  *  Controllers
-*/
+ */
 use App\Modules\Auth\Controller\AuthController;
 use App\Modules\Dashboard\Controller\DashboardController;
 use App\Modules\User\Controller\UserController;
 use App\Modules\Project\Controller\ProjectController;
+use App\Modules\Invoice\Controller\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +62,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     });
 
 
+    //  Project routes
     Route::prefix('project')->as('projects.')->group(function () {
         Route::get('/', [ProjectViewController::class, 'index'])->name('index');
 
@@ -71,5 +74,20 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::put('/update/{id}', [ProjectController::class, 'update'])->name('update');
 
         Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('destroy');
+    });
+
+
+    //  Invoice routes
+    Route::prefix('invoice')->as('invoices.')->group(function () {
+        Route::get('/', [InvoiceViewController::class, 'index'])->name('index');
+
+        //  Create routes
+        Route::get('/create', [InvoiceViewController::class, 'create'])->name('create');
+        Route::post('/store', [InvoiceController::class, 'store'])->name('store');
+
+        Route::get('/{id}', [InvoiceViewController::class, 'show'])->name('show');
+        Route::put('/update/{id}', [InvoiceController::class, 'update'])->name('update');
+
+        Route::delete('/{id}', [InvoiceController::class, 'destroy'])->name('destroy');
     });
 });

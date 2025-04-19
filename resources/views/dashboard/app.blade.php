@@ -39,7 +39,7 @@
         <a href="{{ url('/') }}" class="text-white mb-2 text-decoration-none">Dashboard</a>
         <a href="/user" class="text-white mb-2 text-decoration-none">Clients</a>
         <a href="/project" class="text-white mb-2 text-decoration-none">Projects</a>
-        <a href="#" class="text-white mb-2 text-decoration-none">Invoices</a>
+        <a href="/invoice" class="text-white mb-2 text-decoration-none">Invoices</a>
 
         <div class="mt-auto text-center">
             <form action="{{ url('/logout') }}" method="POST">
