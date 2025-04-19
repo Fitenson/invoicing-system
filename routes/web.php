@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
  */
 use App\Modules\Auth\Controller\AuthViewController;
 use App\Modules\User\Controller\UserViewController;
+use App\Modules\Project\Controller\ProjectViewController;
 
 /**
  *  Controllers
@@ -14,6 +15,7 @@ use App\Modules\User\Controller\UserViewController;
 use App\Modules\Auth\Controller\AuthController;
 use App\Modules\Dashboard\Controller\DashboardController;
 use App\Modules\User\Controller\UserController;
+use App\Modules\Project\Controller\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,5 +57,19 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::put('/update/{id}', [UserController::class, 'update'])->name('update');
 
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+    });
+
+
+    Route::prefix('project')->as('projects.')->group(function () {
+        Route::get('/', [ProjectViewController::class, 'index'])->name('index');
+
+        //  Create routes
+        Route::get('/create', [ProjectViewController::class, 'create'])->name('create');
+        Route::post('/store', [ProjectController::class, 'store'])->name('store');
+
+        Route::get('/{id}', [ProjectViewController::class, 'show'])->name('show');
+        Route::put('/update/{id}', [ProjectController::class, 'update'])->name('update');
+
+        Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('destroy');
     });
 });

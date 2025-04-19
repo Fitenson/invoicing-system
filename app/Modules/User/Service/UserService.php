@@ -8,6 +8,7 @@ use App\Modules\User\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserService extends BaseService {
     private UserRepository $user_repository;
 
