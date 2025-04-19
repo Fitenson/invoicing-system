@@ -229,33 +229,6 @@ function destroyUser(userId) {
     });
 }
 
-        // View selected button - navigate to show page
-        viewSelectedBtn.addEventListener('click', function() {
-            const selectedIds = Array.from(rowCheckboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
-
-            if (selectedIds.length === 1) {
-                window.location.href = `/users/${selectedIds[0]}`;
-            }
-        });
-
-        // Helper functions
-        function updateRowHighlight(checkbox) {
-            const row = checkbox.closest('tr');
-            if (checkbox.checked) {
-                row.classList.add('table-primary');
-            } else {
-                row.classList.remove('table-primary');
-            }
-        }
-
-        function updateActionButtons() {
-            const selectedCount = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
-            deleteSelectedBtn.disabled = selectedCount === 0;
-            viewSelectedBtn.disabled = selectedCount !== 1;
-            editSelectedBtn.disabled = selectedCount !== 1;
-        }
 
         // Main search functionality
         const searchInput = document.getElementById('searchInput');

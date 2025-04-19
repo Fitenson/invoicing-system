@@ -115,6 +115,18 @@ abstract class BaseRepository {
 
 
     /**
+     *  @param string $class_name   Class name of a model
+     *
+     *  @return array $models
+    */
+    public function findAll(string $class_name)
+    {
+        $models = $class_name::all()->toArray();
+        return $models;
+    }
+
+
+    /**
      *  @param string $id   ID of the record user wants to delete
      *
      *  @return Model $model

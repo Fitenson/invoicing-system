@@ -18,16 +18,6 @@
     <form id="createUserForm" action="{{ route('projects.store') }}" method="POST">
         @csrf
 
-        <!-- Project -->
-        <div class="mb-3">
-            <label for="project" class="form-label">Project</label>
-            <input type="text" class="form-control @error('project') is-invalid @enderror"
-                id="project" name="project" value="{{ old('project') }}" required>
-            @error('project')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
         <!-- Project Name -->
         <div class="mb-3">
             <label for="name" class="form-label">Project Name</label>
@@ -37,6 +27,23 @@
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
+
+        <!-- User Dropdown -->
+        <div class="mb-3">
+            <label for="user_id" class="form-label">Client</label>
+            <select class="form-select @error('user_id') is-invalid @enderror" id="user_id" name="user_id" required>
+                <option value="">-- Select Client --</option>
+                @foreach($users as $user)
+                    <option value="{{ $user['id'] }}" {{ old('user_id') == $user['id'] ? 'selected' : '' }}>
+                        {{ $user['name'] }}
+                    </option>
+                @endforeach
+            </select>
+            @error('user_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
 
         <!-- Description -->
         <div class="mb-3">
@@ -51,8 +58,7 @@
         <!-- Rate per hour -->
         <div class="mb-3">
             <label for="rate_per_hour" class="form-label">Rate / Hour</label>
-            <textarea class="form-control @error('rate_per_hour') is-invalid @enderror"
-                id="rate_per_hour" name="rate_per_hour" rows="3">{{ old('rate_per_hour') }}</textarea>
+            <input type="number" id="rate_per_hour" name="rate_per_hour">{{ old('rate_per_hour') }}</input>
             @error('rate_per_hour')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -62,8 +68,7 @@
         <!-- Total hour -->
         <div class="mb-3">
             <label for="total_hour" class="form-label">Total Hour</label>
-            <textarea class="form-control @error('total_hour') is-invalid @enderror"
-                id="total_hour" name="total_hour" rows="3">{{ old('total_hour') }}</textarea>
+            <input type="number" id="total_hour" name="total_hour">{{ old('total_hour') }}</input>
             @error('total_hour')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

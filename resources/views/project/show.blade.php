@@ -18,16 +18,6 @@
     <form id="updateProjectForm" action="{{ route('projects.create') }}" method="POST">
         @csrf
 
-        <!-- Project -->
-        <div class="mb-3">
-            <label for="project" class="form-label">Project</label>
-            <input type="text" class="form-control @error('project') is-invalid @enderror"
-                id="project" name="project" value="{{ old('project') }}" required>
-            @error('project')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
         <!-- Project Name -->
         <div class="mb-3">
             <label for="name" class="form-label">Project Name</label>

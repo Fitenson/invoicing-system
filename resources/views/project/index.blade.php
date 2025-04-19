@@ -11,10 +11,9 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
-                        <a href="{{ route('users.create') }}" class="btn btn-success create-btn m-2 mx-2">Create</a>
+                        <a href="{{ route('projects.create') }}" class="btn btn-success create-btn m-2 mx-2">Create</a>
                     <thead class="bg-light">
                         <tr>
-                            <th scope="col">Project</th>
                             <th scope="col">Name</th>
                             <th scope="col">Rate/Hour</th>
                             <th scope="col">Total Hour</th>
@@ -23,9 +22,6 @@
                         </tr>
                         <!-- Column search fields -->
                         <tr class="column-filters">
-                            <th>
-                                <input type="text" class="form-control form-control-sm column-search" data-column="project" placeholder="Search project...">
-                            </th>
                             <th>
                                 <input type="text" class="form-control form-control-sm column-search" data-column="name" placeholder="Search name...">
                             </th>
@@ -41,7 +37,6 @@
                     <tbody>
                         @forelse($projects as $index => $project)
                             <tr class="user-row" data-id="{{ $project->id }}">
-                                <td>{{ $project->project }}</td>
                                 <td>{{ $project->name }}</td>
                                 <td>{{ $project->rate_per_hour }}</td>
                                 <td>{{ $project->total_hour }}</td>
@@ -65,7 +60,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">No users found.</td>
+                                <td colspan="6" class="text-center py-4">No projects found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -85,28 +80,6 @@
     </div>
 </div>
 
-{{-- Delete confirmation modal --}}
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete the selected client(s)?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="deleteForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
@@ -120,9 +93,6 @@
         const viewSelectedBtn = document.getElementById('viewSelected');
         const editSelectedBtn = document.getElementById('editSelected');
         const userRows = document.querySelectorAll('.user-row');
-        const deleteModalElement = document.getElementById('deleteModal');
-        const deleteModal = new bootstrap.Modal(deleteModalElement);
-        const deleteForm = document.getElementById('deleteForm');
         const columnSearchInputs = document.querySelectorAll('.column-search');
 
 
@@ -246,23 +216,6 @@ function destroyUser(userId) {
                 window.location.href = `/users/${selectedIds[0]}`;
             }
         });
-
-        // Helper functions
-        function updateRowHighlight(checkbox) {
-            const row = checkbox.closest('tr');
-            if (checkbox.checked) {
-                row.classList.add('table-primary');
-            } else {
-                row.classList.remove('table-primary');
-            }
-        }
-
-        function updateActionButtons() {
-            const selectedCount = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
-            deleteSelectedBtn.disabled = selectedCount === 0;
-            viewSelectedBtn.disabled = selectedCount !== 1;
-            editSelectedBtn.disabled = selectedCount !== 1;
-        }
 
         // Main search functionality
         const searchInput = document.getElementById('searchInput');

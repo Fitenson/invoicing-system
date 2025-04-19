@@ -4,14 +4,17 @@ namespace App\Modules\Project\Controller;
 
 use App\Common\Controller\BaseController;
 use App\Modules\Project\Service\ProjectService;
+use App\Modules\User\Service\UserService;
 use Illuminate\Support\Facades\Request;
 
 
 class ProjectViewController extends BaseController {
     private ProjectService $project_service;
+    private UserService $user_service;
 
-    public function __construct(ProjectService $project_service) {
+    public function __construct(ProjectService $project_service, UserService $user_service) {
         $this->project_service = $project_service;
+        $this->user_service = $user_service;
     }
 
 
@@ -29,13 +32,16 @@ class ProjectViewController extends BaseController {
 
 
     public function create() {
-        return view('project.create');
+        $users = $this->user_service->findAll();
+
+        return view('project.create', compact('users'));
     }
 
 
     public function show(string $id) {
         $project = $this->project_service->show($id);
+        $users = $this->user_service->findAll();
 
-        return view('project.show', compact('project'));
+        return view('project.show', compact('project', 'users'));
     }
 }

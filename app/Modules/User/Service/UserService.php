@@ -46,6 +46,12 @@ class UserService extends BaseService {
     }
 
 
+    public function findAll()
+    {
+        return $this->user_repository->findAll(User::class);
+    }
+
+
     public function update(string $id, array $data)
     {
         $user = $this->user_repository->findById(User::class, $id);
