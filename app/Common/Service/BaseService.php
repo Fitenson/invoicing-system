@@ -12,7 +12,7 @@ abstract class BaseService {
      *
      *  @return string $auto_number
     */
-    protected function generateAutoNumber(string $class_name, string $prefix, string $numbers, string $column = 'number'): string
+    protected function generateAutoNumber(string $class_name, string $prefix, string $numbers, string $column): string
     {
         $numberLength = substr_count($numbers, '?');
 

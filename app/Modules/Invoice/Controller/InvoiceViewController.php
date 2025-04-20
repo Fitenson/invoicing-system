@@ -36,7 +36,6 @@ class InvoiceViewController extends BaseController {
     public function create()
     {
         $projects = $this->invoice_service->findAll(Project::class);
-
         $users = $this->invoice_service->findAll(User::class);
 
         return view('invoice.create', compact('projects', 'users'));

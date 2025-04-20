@@ -11,7 +11,7 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
-                        <a href="{{ route('projects.create') }}" class="btn btn-success create-btn m-2 mx-2">Create</a>
+                        <a href="{{ route('invoices.create') }}" class="btn btn-success create-btn m-2 mx-2">Create</a>
                     <thead class="bg-light">
                         <tr>
                             <th scope="col">Actions</th>
@@ -20,6 +20,7 @@
                             <th scope="col">Description</th>
                             <th scope="col">Total Projects</th>
                             <th scope="col">Total Rate/Hour</th>
+                            <th scope="col">Total Hours</th>
                             <th scope="col">Created At</th>
                             <th scope="col">Created By</th>
                             <th scope="col">Updated At</th>
@@ -29,18 +30,9 @@
                     <tbody>
                         @forelse($invoices as $index => $invoice)
                             <tr class="user-row" data-id="{{ $invoice->id }}">
-                                <td>{{ $invoice->invoice_number }}</td>
-                                <td>{{ $invoice->client_name }}</td>
-                                <td>{{ $invoice->description }}</td>
-                                <td>{{ $invoice->total_projects }}</td>
-                                <td>{{ $invoice->total_rate_per_hour }}</td>
-                                <td>{{ $invoice->created_at->format('d M  Y') }}</td>
-                                <td>{{ $invoice->created_by_name }}</td>
-                                <td>{{ $invoice->updated_at->format('d M  Y') }}</td>
-                                <td>{{ $invoice->updated_by_name }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ route('projects.show', $invoice->id) }}" class="btn btn-warning edit-btn" data-id="{{ $invoice->id }}">
+                                        <a href="{{ route('invoices.show', $invoice->id) }}" class="btn btn-warning edit-btn" data-id="{{ $invoice->id }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
@@ -54,10 +46,20 @@
                                         </button>
                                     </div>
                                 </td>
+                                <td>{{ $invoice->invoice_number }}</td>
+                                <td>{{ $invoice->client_name }}</td>
+                                <td>{{ $invoice->description }}</td>
+                                <td>{{ $invoice->total_projects }}</td>
+                                <td>{{ $invoice->total_rate_per_hour }}</td>
+                                <td>{{ $invoice->total_hours }}</td>
+                                <td>{{ $invoice->created_at->format('d M  Y') }}</td>
+                                <td>{{ $invoice->created_by_name }}</td>
+                                <td>{{ $invoice->updated_at->format('d M  Y') }}</td>
+                                <td>{{ $invoice->updated_by_name }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center py-4">No projects found.</td>
+                                <td colspan="10" class="text-center py-4">No invoices found.</td>
                             </tr>
                         @endforelse
                     </tbody>

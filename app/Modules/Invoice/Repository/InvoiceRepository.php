@@ -11,4 +11,12 @@ class InvoiceRepository extends BaseRepository {
     {
         return parent::getPaginated($class_name, $params, $selects, $extra_filters);
     }
+
+
+    public function findInvoice(string $id)
+    {
+        return Invoice::with('projects.project')
+            ->where('id', $id)
+            ->firstOrFail();
+    }
 }

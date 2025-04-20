@@ -2,9 +2,11 @@
 
 namespace App\Modules\Invoice\Service;
 
+use Illuminate\Support\Facades\DB;
 
 use App\Common\Service\BaseService;
 use App\Modules\Invoice\Model\Invoice;
+use App\Modules\Invoice\Model\InvoiceHasProjects;
 use App\Modules\Invoice\Repository\InvoiceRepository;
 use App\Modules\Project\Model\Project;
 use App\Modules\Project\Service\ProjectService;
@@ -42,13 +44,52 @@ class InvoiceService extends BaseService {
     }
 
 
-    public function create(array $data)
+    public function create(string $class_name, array $data)
     {
-        $data['invoice_number'] = $this->generateAutoNumber(Invoice::class, 'invoice_number', 'INV', '????????');
+        $model = null;
 
-        $invoice = $this->invoice_repository->create(Invoice::class, $data);
+        switch ($class_name) {
+            case Invoice::class:
+                $data['invoice_number'] = $this->generateAutoNumber(Invoice::class, 'INV', '????????', 'invoice_number');
+                $model = $this->invoice_repository->create(Invoice::class, $data);
+                break;
 
-        return $invoice;
+            case InvoiceHasProjects::class:
+                $model = $this->invoice_repository->create(InvoiceHasProjects::class, $data);
+                break;
+
+            default:
+                throw new \Exception("Unsupported class name: {$class_name}");
+        }
+
+        return $model;
+    }
+
+
+
+    public function createInvoice(array $data)
+    {
+        $invoice_data = $data['invoice'];
+        $invoice_has_projects = $data['invoice_has_projects'];
+
+        try {
+            DB::beginTransaction();
+
+            $invoice = $this->create(Invoice::class, $invoice_data);
+            $invoiceId = $invoice->id;
+
+            foreach($invoice_has_projects as &$project) {
+                $project['invoice'] = $invoiceId;
+                $this->create(InvoiceHasProjects::class, $project);
+            }
+
+            DB::commit();
+
+            return $invoice;
+        } catch(\Exception $error) {
+            DB::rollBack();
+            throw $error;
+        }
     }
 
 
@@ -73,15 +114,50 @@ class InvoiceService extends BaseService {
     }
 
 
-    public function update(string $id, array $data)
+    public function update(string $id, array $data, string $class_name)
     {
-        $invoice = $this->invoice_repository->findById(Invoice::class, $id);
-        return $this->invoice_repository->update($invoice, $data);
+        $model = null;
+
+        switch($class_name) {
+            case InvoiceHasProjects::class:
+                $model = $this->invoice_repository->findById(InvoiceHasProjects::class, $id);
+                break;
+
+            default:
+                $model = $this->invoice_repository->findById(Invoice::class, $id);
+        }
+
+        return $this->invoice_repository->update($model, $data);
     }
 
 
-    public function destroy(string $id)
+    public function updateInvoice(string $id, array $data)
     {
-        return $this->invoice_repository->destroy(Invoice::class, $id);
+        $invoice_data = $data['invoice'];
+        $invoice_has_projects = $data['invoice_has_projects'];
+
+        $invoice = $this->invoice_repository->findById(Invoice::class, $id);
+
+        try {
+            DB::beginTransaction();
+            $this->invoice_repository->update($invoice, $invoice_data);
+
+            foreach($invoice_has_projects as $project) {
+                $project['invoice'] = $id;
+                $this->invoice_repository->updateOrCreate(InvoiceHasProjects::class, $project);
+            }
+
+            DB::commit();
+
+            return $invoice;
+        } catch(\Exception $error) {
+            DB::rollBack();
+        }
+    }
+
+
+    public function destroy(string $class_name, string $id)
+    {
+        return $this->invoice_repository->destroy($class_name, $id);
     }
 }

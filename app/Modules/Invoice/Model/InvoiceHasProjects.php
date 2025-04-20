@@ -8,15 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
+use App\Modules\User\Model\User;
+use App\Modules\Project\Model\Project;
 
 
-class Invoice extends Model
+class InvoiceHasProjects extends Model
 {
-    public $incrementing = false;
-    protected $keyType = 'string';
-
     use HasFactory;
-
 
     protected static function boot()
     {
@@ -44,16 +42,21 @@ class Invoice extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'invoice_number',
-        'client',
-        'description',
+        'invoice',
+        'project',
         'created_by',
         'updated_by'
     ];
 
 
-    public function projects()
+    public function client()
     {
-        return $this->hasMany(InvoiceHasProjects::class, 'invoice');
+        return $this->belongsTo(User::class, 'client');
+    }
+
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project');
     }
 }

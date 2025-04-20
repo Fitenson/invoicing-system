@@ -127,6 +127,19 @@ abstract class BaseRepository {
 
 
     /**
+     *  @param string $class_name   Class name of a model. Example: User::class
+     *  @param array $data   Data that needs to be saved
+     *
+     *  @return Model $model
+    */
+    public function updateOrCreate(string $class_name, array $data)
+    {
+        $model = $class_name::updateOrCreate($data);
+        return $model;
+    }
+
+
+    /**
      *  @param string $id   ID of the record user wants to delete
      *
      *  @return Model $model
