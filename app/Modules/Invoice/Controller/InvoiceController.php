@@ -76,7 +76,7 @@ class InvoiceController extends BaseController {
 
     public function destroy(string $id)
     {
-        $result = $this->invoice_service->destroy(Invoice::class, $id);
+        $result = $this->invoice_service->destroy($id);
 
         // Check if deletion was successful
         if ($result) {
@@ -85,7 +85,12 @@ class InvoiceController extends BaseController {
         }
 
         // If deletion failed
-        return redirect()->back()->with('error', 'Failed to delete invoice');
+        // die('Hihi');
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete Invoice'
+        ]);
+        // return redirect()->back()->with('error', 'Failed to delete invoice');
     }
 
 

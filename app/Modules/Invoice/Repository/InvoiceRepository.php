@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Common\Repository\BaseRepository;
 use App\Modules\Invoice\Model\Invoice;
+use App\Modules\Invoice\Model\InvoiceHasProjects;
 use App\Modules\Project\Model\Project;
 
 class InvoiceRepository extends BaseRepository {
@@ -31,5 +32,33 @@ class InvoiceRepository extends BaseRepository {
         ->where('id', $id)
         ->firstOrFail()
         ->toArray();
+    }
+
+
+    public function destroyInvoice(string $id)
+    {
+        try {
+            DB::beginTransaction();
+            $this->destroyProjects($id);
+            $results = $this->destroy(Invoice::class, $id);
+            DB::commit();
+            return $results;
+        } catch(\Exception $error) {
+            return false;
+        }
+    }
+
+
+    public function destroyProjects(string $id): bool
+    {
+        $invoiceHasProjects = InvoiceHasProjects::where('invoice', $id);
+
+        try {
+            $invoiceHasProjects->delete();
+
+            return true;
+        } catch(\Exception $error) {
+            return false;
+        }
     }
 }

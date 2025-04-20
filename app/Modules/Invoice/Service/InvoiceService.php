@@ -174,16 +174,13 @@ class InvoiceService extends BaseService {
             return $invoice;
         } catch(\Exception $error) {
             DB::rollBack();
-            echo '<pre>';
-            print_r($error->getMessage());
-            die;
             return false;
         }
     }
 
 
-    public function destroy(string $class_name, string $id)
+    public function destroy(string $id)
     {
-        return $this->invoice_repository->destroy($class_name, $id);
+        return $this->invoice_repository->destroyInvoice($id);
     }
 }
