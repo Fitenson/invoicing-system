@@ -185,4 +185,10 @@ class InvoiceService extends BaseService {
     {
         return $this->invoice_repository->destroyInvoice($id);
     }
+
+
+    public function getTotalInvoice()
+    {
+        return $this->invoice_repository->getTotalRecord(Invoice::class);
+    }
 }

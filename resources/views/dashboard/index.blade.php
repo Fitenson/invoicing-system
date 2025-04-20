@@ -11,16 +11,26 @@
             <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5>Total Invoices</h5>
-                        <p>15</p>
+                        <h5>Total Clients</h5>
+                        <p>{{ $total_records['total_client'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5>Total Customers</h5>
-                        <p>8</p>
+                        <h5>Total Projects</h5>
+                        <p>{{ $total_records['total_project'] ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5>Total Invoices</h5>
+                        <p>{{ $total_records['total_invoice'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>

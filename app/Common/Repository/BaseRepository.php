@@ -155,4 +155,14 @@ abstract class BaseRepository {
 
         return $model->delete();
     }
+
+
+    public function getTotalRecord(string $class_name)
+    {
+        if (!class_exists($class_name)) {
+            throw new \InvalidArgumentException("Class {$class_name} does not exist.");
+        }
+
+        return $class_name::count();
+    }
 }

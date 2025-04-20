@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
  *  View Controllers
  */
 use App\Modules\Auth\Controller\AuthViewController;
+use App\Modules\Dashboard\Controller\DashboardViewController;
 use App\Modules\User\Controller\UserViewController;
 use App\Modules\Project\Controller\ProjectViewController;
 use App\Modules\Invoice\Controller\InvoiceViewController;
@@ -14,7 +15,6 @@ use App\Modules\Invoice\Controller\InvoiceViewController;
  *  Controllers
  */
 use App\Modules\Auth\Controller\AuthController;
-use App\Modules\Dashboard\Controller\DashboardController;
 use App\Modules\User\Controller\UserController;
 use App\Modules\Project\Controller\ProjectController;
 use App\Modules\Invoice\Controller\InvoiceController;
@@ -45,7 +45,7 @@ Route::middleware(['web', 'guest'])->group(function () {
 // Protected routes (web + auth)
 Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardViewController::class, 'index'])->name('dashboard');
 
     //  User routes
     Route::prefix('user')->as('users.')->group(function () {

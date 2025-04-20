@@ -67,4 +67,10 @@ class UserService extends BaseService {
     {
         return $this->user_repository->destroy(User::class, $id);
     }
+
+
+    public function getTotalUser()
+    {
+        return $this->user_repository->getTotalRecord(User::class);
+    }
 }

@@ -62,4 +62,10 @@ class ProjectService extends BaseService {
     {
         return $this->project_repository->destroy(Project::class, $id);
     }
+
+
+    public function getTotalProject()
+    {
+        return $this->project_repository->getTotalRecord(Project::class);
+    }
 }
