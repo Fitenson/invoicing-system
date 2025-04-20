@@ -76,7 +76,7 @@ class InvoiceController extends BaseController {
 
     public function destroy(string $id)
     {
-        $result = $this->invoice_service->destroy($id);
+        $result = $this->invoice_service->destroy(Invoice::class, $id);
 
         // Check if deletion was successful
         if ($result) {

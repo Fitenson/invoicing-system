@@ -8,7 +8,7 @@
             <i class="fas fa-times me-1"></i> Cancel
         </a>
         <button form="createInvoiceForm" type="submit" class="btn btn-success">
-            <i class="fas fa-save me-1"></i> Create
+            <i class="fas fa-save me-1"></i> Update
         </button>
     </div>
 

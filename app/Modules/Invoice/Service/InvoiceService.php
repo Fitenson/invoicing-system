@@ -182,9 +182,9 @@ class InvoiceService extends BaseService {
     }
 
 
-    public function destroy(string $id)
+    public function destroy(string $class_name, string $id)
     {
-        return $this->invoice_repository->destroyInvoice($id);
+        return $this->invoice_repository->destroy($class_name, $id);
     }
 
 

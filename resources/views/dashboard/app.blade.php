@@ -30,6 +30,16 @@
             margin-left: 220px;
             padding: 20px;
         }
+        .truncate-multiline {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 4.5em;
+            line-height: 1.5em;
+        }
+
     </style>
 </head>
 <body>

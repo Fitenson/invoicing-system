@@ -35,6 +35,12 @@ class Invoice extends Model
                 $model->updated_by = $User->id;
             }
         });
+
+
+        // Delete related InvoiceHasProjects before deleting invoice
+        static::deleting(function ($model) {
+            $model->projects()->delete();
+        });
     }
 
 

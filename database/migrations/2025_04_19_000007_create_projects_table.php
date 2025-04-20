@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name', 100)->nullable();
             $table->uuid('client')->nullable();
-            $table->string('description', 255)->nullable();
+            $table->string('description', 500)->nullable();
             $table->string('rate_per_hour', 100)->nullable();
             $table->string('total_hours', 100)->nullable();
             $table->uuid('created_by')->nullable();

@@ -30,7 +30,7 @@
                         @forelse($projects as $index => $project)
                             <tr class="user-row" data-id="{{ $project->id }}">
                                 <td>{{ $project->name }}</td>
-                                <td>{{ $project->description }}</td>
+                                <td class="truncate-multiline">{{ $project->description }}</td>
                                 <td>{{ $project->client_name }}</td>
                                 <td>{{ $project->rate_per_hour }}</td>
                                 <td>{{ $project->total_hours }}</td>
