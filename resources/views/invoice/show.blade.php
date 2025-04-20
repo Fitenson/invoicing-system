@@ -1,14 +1,14 @@
 @extends('dashboard.app')
 
 @section('content')
-<div class="container mt-4">
+<div class="container mt-4" id="invoiceContainer" data-invoice-id="{{ $invoice['id'] }}">
     <!-- Top Action Buttons -->
     <div class="mb-3 d-flex justify-content-start gap-2">
         <a href="{{ route('invoices.index') }}" class="btn btn-secondary">
             <i class="fas fa-times me-1"></i> Cancel
         </a>
-        <button form="updateInvoiceForm" type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-1"></i> Update
+        <button form="createInvoiceForm" type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i> Create
         </button>
     </div>
 
@@ -24,7 +24,6 @@
             <label for="invoice_number" class="form-label">Invoice Number</label>
             <input type="text" class="form-control" id="invoice_number" name="invoice_number" value="{{ old('invoice_number', $invoice['invoice_number']) }}" readonly>
         </div>
-
 
         <!-- Client -->
         <div class="mb-3">
@@ -50,8 +49,7 @@
                 id="description" name="invoice[description]" rows="3">{{ old('description', $invoice['description']) }}</textarea>
         </div>
 
-
-        <!-- Invoice Projects Section -->
+        <!-- GridView: Invoice Projects Table -->
         <h5 class="mb-2">Invoice Projects</h5>
 
         <div class="mb-3">
@@ -127,6 +125,26 @@
                                     >Delete</button>
                                 </td>
                             </tr>
+                        @else
+                            <tr data-id="{{ $invoice_project['id'] }}">
+                                <td>
+                                    {{ 'Unknown' }}
+                                    <input type="hidden" name="project" value="{{ "" }}">
+                                </td>
+                                <td>
+                                    <input type="number" name="rate_per_hour" class="form-control" value="{{ 0.00 }}" step="any" min="0" readonly>
+                                </td>
+                                <td>
+                                    <input type="number" name="total_hours" class="form-control" value="{{ 0 }}" step="any" min="0" readonly>
+                                </td>
+                                <td>
+                                    <button
+                                        type="button"
+                                        class="btn btn-danger btn-sm delete-project-btn"
+                                        data-id="{{ $invoice_project['id'] }}"
+                                    >Delete</button>
+                                </td>
+                            </tr>
                         @endif
                     @endforeach
                 @endif
@@ -134,39 +152,59 @@
         </table>
     </form>
 </div>
-@endsection
 
-@push('scripts')
+<!-- Inline Script -->
 <script>
     function addProjectRow() {
         const select = document.getElementById('projectSelect');
+        const projectId = select.value;
         const selectedOption = select.options[select.selectedIndex];
 
-        const projectId = selectedOption.value;
         const projectName = selectedOption.getAttribute('data-name');
-        const rate = selectedOption.getAttribute('data-rate');
-        const hours = selectedOption.getAttribute('data-hours');
+        const ratePerHour = selectedOption.getAttribute('data-rate');
+        const totalHours = selectedOption.getAttribute('data-hours');
 
-        if (!projectId) {
-            alert('Please select a project.');
-            return;
-        }
+        if (!projectId) return alert('Please select a project.');
 
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const invoiceId = "{{ $invoice['id'] }}";
+        const formData = new FormData();
+        formData.append('invoice_has_projects[project]', projectId);
 
-        fetch(`/api/invoice/store-project/${projectId}`, {
+        fetch(`/invoice/store-project/${invoiceId}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
-            body: JSON.stringify({
-                project: projectId,
-            })
+            body: formData
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                if (document.querySelector(`input[name="invoice_has_projects[][project]"][value="${projectId}"]`)) {
+                    return alert('This project has already been added.');
+                }
+
+                const tbody = document.getElementById('projectTableBody');
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>
+                        ${projectName}
+                        <input type="hidden" name="invoice_has_projects[][project]" value="${projectId}">
+                    </td>
+                    <td>
+                        <input type="number" name="invoice_has_projects[][rate_per_hour]" class="form-control" value="${ratePerHour}" step="any" min="0" readonly>
+                    </td>
+                    <td>
+                        <input type="number" name="invoice_has_projects[][total_hours]" class="form-control" value="${totalHours}" step="any" min="0" readonly>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Remove</button>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+                select.value = '';
                 alert('Project added successfully!');
                 // Optionally update your UI to show the project in the invoice row
             } else {
@@ -178,38 +216,5 @@
             alert('An error occurred while adding the project.');
         });
     }
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.delete-project-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const projectId = this.getAttribute('data-id');
-                const row = this.closest('tr');
-
-                if (confirm('Are you sure you want to delete this project from the invoice?')) {
-                    fetch(`/show/${projectId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            row.remove();
-                        } else {
-                            return response.json().then(data => {
-                                alert(data.message || 'Failed to delete project.');
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        alert('Something went wrong.');
-                    });
-                }
-            });
-        });
-    });
 </script>
-@endpush
+@endsection

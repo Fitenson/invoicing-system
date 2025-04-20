@@ -34,6 +34,14 @@ class InvoiceService extends BaseService {
             'client_name' => User::select(['name'])->whereColumn('users.id', 'invoices.client'),
             'created_by_name' => User::select(['name'])->whereColumn('users.id', 'invoices.created_by'),
             'updated_by_name' => User::select(['name'])->whereColumn('users.id', 'invoices.updated_by'),
+            'total_projects' => InvoiceHasProjects::select(DB::raw('COUNT(*)'))
+            ->whereColumn('invoice_has_projects.invoice', 'invoices.id'),
+            'total_rate_per_hour' => InvoiceHasProjects::join('projects', 'projects.id', '=', 'invoice_has_projects.project')
+            ->select(DB::raw('SUM(projects.rate_per_hour)'))
+            ->whereColumn('invoice_has_projects.invoice', 'invoices.id'),
+            'total_hours' => InvoiceHasProjects::join('projects', 'projects.id', '=', 'invoice_has_projects.project')
+            ->select(DB::raw('SUM(projects.total_hours)'))
+            ->whereColumn('invoice_has_projects.invoice', 'invoices.id'),
         ];
 
         return $this->invoice_repository->getPaginated(Invoice::class, $params, $selects);
