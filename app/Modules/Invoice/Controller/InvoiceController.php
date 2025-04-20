@@ -40,4 +40,52 @@ class InvoiceController extends BaseController {
 
         return redirect()->route('invoices.index')->with('success', 'User deleted successfully');
     }
+
+
+    public function update(string $id, Request $request)
+    {
+        $post_data = $request->all();
+
+        // echo '<pre>';
+        // print_r($post_data);
+        // die;
+        $update_invoice = $this->invoice_service->updateInvoice($id, $post_data);
+
+        if($update_invoice) {
+            return redirect()->route('invoices.show', ['id' => $id])->with('success', 'Invoice updated successfully.');
+        }
+
+
+        return redirect()->back()->with('error', 'Failed to update invoice.');
+    }
+
+
+    public function destroy(string $id)
+    {
+        $result = $this->invoice_service->destroy(Invoice::class, $id);
+
+        // Check if deletion was successful
+        if ($result) {
+            // Redirect with success message
+            return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully');
+        }
+
+        // If deletion failed
+        return redirect()->back()->with('error', 'Failed to delete invoice');
+    }
+
+
+    public function destroyProjects(string $id)
+    {
+        $result = $this->invoice_service->destroy(InvoiceHasProjects::class, $id);
+
+        // Check if deletion was successful
+        if ($result) {
+            // Redirect with success message
+            return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully');
+        }
+
+        // If deletion failed
+        return redirect()->back()->with('error', 'Failed to delete invoice');
+    }
 }

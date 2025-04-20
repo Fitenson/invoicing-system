@@ -40,4 +40,18 @@ class InvoiceViewController extends BaseController {
 
         return view('invoice.create', compact('projects', 'users'));
     }
+
+
+    public function show(string $id)
+    {
+        //  Invoice data
+        $invoice = $this->invoice_service->findInvoice($id);
+        $invoice_has_projects = $invoice['projects'];
+
+        //  For dropdowns
+        $projects = $this->invoice_service->findAll(Project::class);
+        $users = $this->invoice_service->findAll(User::class);
+
+        return view('invoice.show', compact('invoice', 'invoice_has_projects', 'projects', 'users'));
+    }
 }

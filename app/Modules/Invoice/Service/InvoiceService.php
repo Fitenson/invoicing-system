@@ -30,7 +30,10 @@ class InvoiceService extends BaseService {
     public function getPaginated(array $params)
     {
         $selects = [
-            '*'
+            '*',
+            'client_name' => User::select(['name'])->whereColumn('users.id', 'invoices.client'),
+            'created_by_name' => User::select(['name'])->whereColumn('users.id', 'invoices.created_by'),
+            'updated_by_name' => User::select(['name'])->whereColumn('users.id', 'invoices.updated_by'),
         ];
 
         return $this->invoice_repository->getPaginated(Invoice::class, $params, $selects);
@@ -114,6 +117,14 @@ class InvoiceService extends BaseService {
     }
 
 
+    public function findInvoice(string $id)
+    {
+        $invoice = $this->invoice_repository->findInvoice($id);
+
+        return $invoice;
+    }
+
+
     public function update(string $id, array $data, string $class_name)
     {
         $model = null;
@@ -134,17 +145,20 @@ class InvoiceService extends BaseService {
     public function updateInvoice(string $id, array $data)
     {
         $invoice_data = $data['invoice'];
-        $invoice_has_projects = $data['invoice_has_projects'];
+        $invoice_has_projects = !empty($data['invoice_has_projects']) ? $data['invoice_has_projects'] : [];
 
         $invoice = $this->invoice_repository->findById(Invoice::class, $id);
 
         try {
             DB::beginTransaction();
+
             $this->invoice_repository->update($invoice, $invoice_data);
 
-            foreach($invoice_has_projects as $project) {
-                $project['invoice'] = $id;
-                $this->invoice_repository->updateOrCreate(InvoiceHasProjects::class, $project);
+            if(!empty($invoice_has_projects)) {
+                foreach($invoice_has_projects as $project) {
+                    $project['invoice'] = $id;
+                    $this->invoice_repository->updateOrCreate(InvoiceHasProjects::class, $project);
+                }
             }
 
             DB::commit();
@@ -152,6 +166,10 @@ class InvoiceService extends BaseService {
             return $invoice;
         } catch(\Exception $error) {
             DB::rollBack();
+            echo '<pre>';
+            print_r($error->getMessage());
+            die;
+            return false;
         }
     }
 
