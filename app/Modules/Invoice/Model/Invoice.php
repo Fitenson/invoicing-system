@@ -2,7 +2,7 @@
 
 namespace App\Modules\Invoice\Model;
 
-
+use App\Modules\User\Model\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +56,12 @@ class Invoice extends Model
         'created_by',
         'updated_by'
     ];
+
+
+    public function client()
+    {
+        return $this->belongsTo(User::class, 'client');
+    }
 
 
     public function projects()

@@ -3,6 +3,7 @@
 namespace App\Modules\Invoice\Service;
 
 use Illuminate\Support\Facades\DB;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 
 use App\Common\Service\BaseService;
 use App\Modules\Invoice\Model\Invoice;
@@ -191,5 +192,16 @@ class InvoiceService extends BaseService {
     public function getTotalInvoice()
     {
         return $this->invoice_repository->getTotalRecord(Invoice::class);
+    }
+
+
+    public function generateInvoicePDF($invoice)
+    {
+        $invoice_has_projects = $invoice['projects'];
+
+        return SnappyPdf::loadView('invoice.pdf-template', [
+            'invoice' => $invoice,
+            'invoice_has_projects' => $invoice_has_projects
+        ]);
     }
 }

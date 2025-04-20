@@ -2,15 +2,28 @@
 
 @section('content')
 <div class="container mt-4" id="invoiceContainer" data-invoice-id="{{ $invoice['id'] }}">
+
     <!-- Top Action Buttons -->
     <div class="mb-3 d-flex justify-content-start gap-2">
         <a href="{{ route('invoices.index') }}" class="btn btn-secondary">
             <i class="fas fa-times me-1"></i> Cancel
         </a>
+
         <button form="createInvoiceForm" type="submit" class="btn btn-success">
             <i class="fas fa-save me-1"></i> Update
         </button>
+
+        <button form="generatePDF" type="submit" class="btn btn-danger">
+            <i class="fas fa-file-pdf me-1 mx-2"></i> PDF
+        </button>
+
+        <button form="emailPDF" type="submit" name="action" value="email" class="btn btn-primary">
+            <i class="fas fa-envelope me-1"></i> Email
+        </button>
     </div>
+
+    <!-- PDF Form using GET method -->
+    <form id="generatePDF" method="GET" action="{{ route('invoices.generatePDF', $invoice['id']) }}" target="_blank"></form>
 
     <h3 class="mb-4">Edit Invoice</h3>
 

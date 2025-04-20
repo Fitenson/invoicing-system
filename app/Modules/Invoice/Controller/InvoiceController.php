@@ -112,4 +112,13 @@ class InvoiceController extends BaseController {
         // If deletion failed
         return redirect()->back()->with('error', 'Failed to delete invoice');
     }
+
+
+    public function generatePDF(string $id)
+    {
+        $invoice = $this->invoice_service->findInvoice($id);
+        $pdf = $this->invoice_service->generateInvoicePDF($invoice);
+
+        return $pdf->inline("invoice_{$invoice['invoice_number']}.pdf");
+    }
 }

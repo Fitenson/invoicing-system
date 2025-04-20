@@ -21,6 +21,7 @@ class InvoiceRepository extends BaseRepository {
     {
         $invoice = Invoice::selectRaw('
             invoices.*,
+            users.name as client_name,
             (
                 SELECT SUM(projects.total_hours)
                 FROM invoice_has_projects
@@ -28,9 +29,10 @@ class InvoiceRepository extends BaseRepository {
                 WHERE invoice_has_projects.invoice = invoices.id
             ) as total_hours
         ')
+        ->leftJoin('users', 'users.id', '=', 'invoices.client')
         ->with([
-            'projects.project' => function ($query) {
-                $query->select([
+            'projects.project' => function ($subQuery) {
+                $subQuery->select([
                     'id',
                     'name',
                     'rate_per_hour',
@@ -44,7 +46,6 @@ class InvoiceRepository extends BaseRepository {
 
         return $invoice;
     }
-
 
 
     public function destroyInvoice(string $id)

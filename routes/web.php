@@ -85,6 +85,8 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::get('/create', [InvoiceViewController::class, 'create'])->name('create');
         Route::post('/store', [InvoiceController::class, 'store'])->name('store');
 
+        Route::get('/generate-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('generatePDF');
+
         Route::get('/{id}', [InvoiceViewController::class, 'show'])->name('show');
         Route::put('/update/{id}', [InvoiceController::class, 'update'])->name('update');
         Route::post('/store-project/{id}', [InvoiceController::class, 'storeProject'])->name('storeProject');
@@ -92,5 +94,6 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::delete('/{id}', [InvoiceController::class, 'destroy'])->name('destroy');
 
         Route::delete('/destroy-project/{id}', [InvoiceController::class, 'destroyProjects'])->name('destroyProjects');
+
     });
 });
