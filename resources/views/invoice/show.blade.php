@@ -138,36 +138,78 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.delete-project-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const projectId = this.getAttribute('data-id');
-            const row = this.closest('tr');
+    function addProjectRow() {
+        const select = document.getElementById('projectSelect');
+        const selectedOption = select.options[select.selectedIndex];
 
-            if (confirm('Are you sure you want to delete this project from the invoice?')) {
-                fetch(`/show/${projectId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        row.remove();
-                    } else {
-                        return response.json().then(data => {
-                            alert(data.message || 'Failed to delete project.');
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('Something went wrong.');
-                });
+        const projectId = selectedOption.value;
+        const projectName = selectedOption.getAttribute('data-name');
+        const rate = selectedOption.getAttribute('data-rate');
+        const hours = selectedOption.getAttribute('data-hours');
+
+        if (!projectId) {
+            alert('Please select a project.');
+            return;
+        }
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch(`/api/invoice/store-project/${projectId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                project: projectId,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Project added successfully!');
+                // Optionally update your UI to show the project in the invoice row
+            } else {
+                alert('Failed to add project: ' + data.message);
             }
+        })
+        .catch(error => {
+            console.error('Error adding project:', error);
+            alert('An error occurred while adding the project.');
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-project-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const projectId = this.getAttribute('data-id');
+                const row = this.closest('tr');
+
+                if (confirm('Are you sure you want to delete this project from the invoice?')) {
+                    fetch(`/show/${projectId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            row.remove();
+                        } else {
+                            return response.json().then(data => {
+                                alert(data.message || 'Failed to delete project.');
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Something went wrong.');
+                    });
+                }
+            });
         });
     });
-});
 </script>
 @endpush

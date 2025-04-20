@@ -87,6 +87,7 @@ Route::middleware(['web', 'auth'])->group(function () {
 
         Route::get('/{id}', [InvoiceViewController::class, 'show'])->name('show');
         Route::put('/update/{id}', [InvoiceController::class, 'update'])->name('update');
+        Route::post('/store-project/{id}', [InvoiceController::class, 'storeProject'])->name('store_project');
 
         Route::delete('/{id}', [InvoiceController::class, 'destroy'])->name('destroy');
 

@@ -42,13 +42,19 @@ class InvoiceController extends BaseController {
     }
 
 
+    public function storeProject(string $id, Request $request)
+    {
+        $post_data = $request->all();
+        $post_data['invoice'] = $id;
+        $this->invoice_service->create(InvoiceHasProjects::class, $post_data);
+
+        return redirect()->route('invoices.show', ['id' => $id])->with('success', 'Invoice updated successfully.');
+    }
+
+
     public function update(string $id, Request $request)
     {
         $post_data = $request->all();
-
-        // echo '<pre>';
-        // print_r($post_data);
-        // die;
         $update_invoice = $this->invoice_service->updateInvoice($id, $post_data);
 
         if($update_invoice) {
