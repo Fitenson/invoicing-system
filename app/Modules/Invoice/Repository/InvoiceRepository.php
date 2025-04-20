@@ -19,7 +19,16 @@ class InvoiceRepository extends BaseRepository {
 
     public function findInvoice(string $id)
     {
-        return Invoice::with([
+        $invoice = Invoice::selectRaw('
+            invoices.*,
+            (
+                SELECT SUM(projects.total_hours)
+                FROM invoice_has_projects
+                INNER JOIN projects ON projects.id = invoice_has_projects.project
+                WHERE invoice_has_projects.invoice = invoices.id
+            ) as total_hours
+        ')
+        ->with([
             'projects.project' => function ($query) {
                 $query->select([
                     'id',
@@ -29,10 +38,13 @@ class InvoiceRepository extends BaseRepository {
                 ]);
             }
         ])
-        ->where('id', $id)
+        ->where('invoices.id', $id)
         ->firstOrFail()
         ->toArray();
+
+        return $invoice;
     }
+
 
 
     public function destroyInvoice(string $id)

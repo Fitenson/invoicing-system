@@ -150,6 +150,10 @@
                 @endif
             </tbody>
         </table>
+
+        <!-- Total hours -->
+        <p class="form-control-plaintext mb-3">Total Hours: {{ $invoice['total_hours'] ?? 0 }}</p>
+
     </form>
 </div>
 
