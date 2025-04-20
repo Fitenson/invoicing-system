@@ -104,10 +104,10 @@
                 <input type="hidden" name="invoice_has_projects[][project]" value="${projectId}">
             </td>
             <td>
-                <input type="number" name="invoice_has_projects[][rate_per_hour]" class="form-control" value="${ratePerHour}" step="any" min="0">
+                <input type="number" name="[rate_per_hour]" class="form-control" value="${ratePerHour}" step="any" min="0">
             </td>
             <td>
-                <input type="number" name="invoice_has_projects[][total_hours]" class="form-control" value="${totalHours}" step="any" min="0">
+                <input type="number" name="[total_hours]" class="form-control" value="${totalHours}" step="any" min="0">
             </td>
             <td>
                 <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Delete</button>

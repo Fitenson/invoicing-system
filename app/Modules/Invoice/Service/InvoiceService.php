@@ -83,6 +83,7 @@ class InvoiceService extends BaseService {
         $invoice_data = $data['invoice'];
         $invoice_has_projects = !empty($data['invoice_has_projects']) ? $data['invoice_has_projects'] : [];
 
+
         try {
             DB::beginTransaction();
 
@@ -92,7 +93,7 @@ class InvoiceService extends BaseService {
             if(!empty($invoice_has_projects)) {
                 foreach($invoice_has_projects as &$project) {
                     $project['invoice'] = $invoiceId;
-                    $this->create(InvoiceHasProjects::class, $project);
+                    $results[] = $this->create(InvoiceHasProjects::class, $project);
                 }
             }
 
