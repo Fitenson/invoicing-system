@@ -140,6 +140,7 @@ abstract class BaseRepository {
 
 
     /**
+     *  @param string $class_name   Class name of a model. Example: User::class
      *  @param string $id   ID of the record user wants to delete
      *
      *  @return Model $model
@@ -157,6 +158,11 @@ abstract class BaseRepository {
     }
 
 
+    /**
+     * @param string $class_name   Class name of a model. Example: User::class
+     *
+     *  @return string $count   Total record of a table
+    */
     public function getTotalRecord(string $class_name)
     {
         if (!class_exists($class_name)) {
