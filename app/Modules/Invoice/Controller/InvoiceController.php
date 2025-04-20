@@ -96,7 +96,12 @@ class InvoiceController extends BaseController {
         // Check if deletion was successful
         if ($result) {
             // Redirect with success message
-            return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully');
+            return response()->json([
+                'success' => true,
+                'message' => 'Project remove successfully!',
+            ]);
+
+            // return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully');
         }
 
         // If deletion failed

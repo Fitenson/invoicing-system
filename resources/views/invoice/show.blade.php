@@ -199,7 +199,7 @@
                         <input type="number" name="invoice_has_projects[][total_hours]" class="form-control" value="${totalHours}" step="any" min="0" readonly>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Remove</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Delete</button>
                     </td>
                 `;
 
@@ -216,5 +216,41 @@
             alert('An error occurred while adding the project.');
         });
     }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Add click event listener for the add project button as an alternative to inline onclick
+
+    // Event listeners for delete buttons
+    document.querySelectorAll('.delete-project-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const projectId = this.getAttribute('data-id');
+            const row = this.closest('tr');
+
+            if (confirm('Are you sure you want to delete this project from the invoice?')) {
+                fetch(`/invoice/destroy-project/${projectId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        row.remove();
+                    } else {
+                        return response.json().then(data => {
+                            alert(data.message || 'Failed to delete project.');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Something went wrong.');
+                });
+            }
+        });
+    });
+});
 </script>
 @endsection

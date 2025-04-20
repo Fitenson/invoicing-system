@@ -110,7 +110,7 @@
                 <input type="number" name="invoice_has_projects[][total_hours]" class="form-control" value="${totalHours}" step="any" min="0">
             </td>
             <td>
-                <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Remove</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Delete</button>
             </td>
         `;
 

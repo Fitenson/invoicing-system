@@ -91,6 +91,6 @@ Route::middleware(['web', 'auth'])->group(function () {
 
         Route::delete('/{id}', [InvoiceController::class, 'destroy'])->name('destroy');
 
-        Route::delete('/show/{id}', [InvoiceController::class, 'destroyProjects'])->name('destroy_projects');
+        Route::delete('/destroy-project/{id}', [InvoiceController::class, 'destroyProjects'])->name('destroyProjects');
     });
 });
