@@ -20,6 +20,9 @@ class DashboardService extends BaseService {
     }
 
 
+    /**
+     *  Provide the neccessary data to display on Dashboard
+    */
     public function getDashboardData()
     {
         $total_client = $this->user_service->getTotalUser();

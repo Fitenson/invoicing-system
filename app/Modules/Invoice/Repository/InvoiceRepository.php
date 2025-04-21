@@ -4,20 +4,35 @@ namespace App\Modules\Invoice\Repository;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 use App\Common\Repository\BaseRepository;
 use App\Modules\Invoice\Model\Invoice;
 use App\Modules\Invoice\Model\InvoiceHasProjects;
 use App\Modules\Project\Model\Project;
-use Illuminate\Support\Facades\Auth;
+
 
 class InvoiceRepository extends BaseRepository {
+    /**
+     *  @param string $class_name       Class name of a model. Example: Invoice::class
+     *  @param array $params            Parameter for the backend to perform server-side filtering
+     *  @param array $selects           Selects query for the backend to perform in order to display the necessary data.
+     *  @param array $extra_filters     Additional condition of filter, if any
+     *
+     *  @return LengthAwarePaginator $data
+    */
     public function getPaginated(string $class_name = Invoice::class, array $params, array $selects, array $extra_filters = [])
     {
         return parent::getPaginated($class_name, $params, $selects, $extra_filters);
     }
 
 
+    /**
+     *  @param string $id       id of the selected Invoice
+     *
+     *  @return array $invoice      Invoice data along with the projects associated with the selected Invoice
+    */
     public function findInvoice(string $id)
     {
         $invoice = Invoice::selectRaw('
@@ -61,6 +76,11 @@ class InvoiceRepository extends BaseRepository {
     }
 
 
+    /**
+     *  @param string $id       id of the selected Invoice to be deleted
+     *
+     *  @return bool $results       Return false, if got error, otherwise, return success
+    */
     public function destroyInvoice(string $id)
     {
         try {
@@ -75,6 +95,11 @@ class InvoiceRepository extends BaseRepository {
     }
 
 
+    /**
+     *  @param string $id       id of the selected Project associated with an Invoice record
+     *
+     *  @return bool $results       Return false, if got error, otherwise, return success
+    */
     public function destroyProjects(string $id): bool
     {
         $invoiceHasProjects = InvoiceHasProjects::where('invoice', $id);
@@ -89,6 +114,9 @@ class InvoiceRepository extends BaseRepository {
     }
 
 
+    /**
+     *  Return total income to be displayed on Dashboard
+    */
     public function getTotalIncome()
     {
         $invoice = Invoice::selectRaw('
@@ -104,5 +132,4 @@ class InvoiceRepository extends BaseRepository {
 
         return $invoice ? $invoice->total_income : '0.00';
     }
-
 }

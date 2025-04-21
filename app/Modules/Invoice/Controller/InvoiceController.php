@@ -19,6 +19,9 @@ class InvoiceController extends BaseController {
     }
 
 
+    /**
+     *  Index API
+    */
     public function index(Request $request)
     {
         $params = [
@@ -31,7 +34,9 @@ class InvoiceController extends BaseController {
         return view('invoice.index', compact('invoices'));
     }
 
-
+    /**
+     *  Create new Invoice API
+    */
     public function store(Request $request)
     {
         $post_data = $request->all();
@@ -42,6 +47,11 @@ class InvoiceController extends BaseController {
     }
 
 
+    /**
+     *  Add new project on existing Invoice
+     *  @param string $id       Pass the id of the selected Invoice record
+     *  @param Request $request     POST request containing the FormData of the selected project to be added
+    */
     public function storeProject(string $id, Request $request)
     {
         $post_data = $request->all();
@@ -60,6 +70,10 @@ class InvoiceController extends BaseController {
     }
 
 
+    /**
+     * @param string $id       Pass the id of the selected Invoice record to be updated
+     * @param Request $request     POST request containing the FormData of the fields to be updated
+    */
     public function update(string $id, Request $request)
     {
         $post_data = $request->all();
@@ -74,6 +88,9 @@ class InvoiceController extends BaseController {
     }
 
 
+    /**
+     *  @param string $id       Pass the id of the selected Invoice record to be deleted
+    */
     public function destroy(string $id)
     {
         $result = $this->invoice_service->destroy(Invoice::class, $id);
@@ -85,7 +102,6 @@ class InvoiceController extends BaseController {
         }
 
         // If deletion failed
-        // die('Hihi');
         return response()->json([
             'success' => false,
             'message' => 'Failed to delete Invoice'
@@ -94,6 +110,9 @@ class InvoiceController extends BaseController {
     }
 
 
+    /**
+     *  @param string $id       Pass id of the selected InvoiceHasProjects record to be deleted
+    */
     public function destroyProjects(string $id)
     {
         $result = $this->invoice_service->destroy(InvoiceHasProjects::class, $id);
@@ -114,6 +133,9 @@ class InvoiceController extends BaseController {
     }
 
 
+    /**
+     *  @param string $id       Pass id of the selected Invoice record
+    */
     public function generatePDF(string $id)
     {
         $invoice = $this->invoice_service->findInvoice($id);

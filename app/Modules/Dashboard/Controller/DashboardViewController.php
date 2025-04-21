@@ -14,6 +14,9 @@ class DashboardViewController extends Controller {
     }
 
 
+    /**
+     *  Display the dashboard page and the necessary data
+    */
     public function index()
     {
         $data = $this->dashboard_service->getDashboardData();

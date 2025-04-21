@@ -19,7 +19,9 @@ class InvoiceViewController extends BaseController {
         $this->invoice_service = $invoice_service;
     }
 
-
+    /**
+     *  Display and render index page
+    */
     public function index(Request $request)
     {
         $params = [
@@ -33,6 +35,9 @@ class InvoiceViewController extends BaseController {
     }
 
 
+    /**
+     *  Display and render create Invoice page
+    */
     public function create()
     {
         $projects = $this->invoice_service->findAll(Project::class);
@@ -42,6 +47,9 @@ class InvoiceViewController extends BaseController {
     }
 
 
+    /**
+     *  Display and render show Invoice page
+    */
     public function show(string $id)
     {
         //  Invoice data
