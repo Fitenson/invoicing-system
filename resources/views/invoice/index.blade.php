@@ -19,6 +19,7 @@
                             <th scope="col">Client</th>
                             <th scope="col">Description</th>
                             <th scope="col">Total Projects</th>
+                            <th scope="col">Total Income(RM)</th>
                             <th scope="col">Total Rate/Hour</th>
                             <th scope="col">Total Hours</th>
                             <th scope="col">Created At</th>
@@ -50,6 +51,7 @@
                                 <td>{{ $invoice->client_name }}</td>
                                 <td>{{ $invoice->description }}</td>
                                 <td>{{ $invoice->total_projects }}</td>
+                                <td>{{ $invoice->total_income }}</td>
                                 <td>{{ $invoice->total_rate_per_hour }}</td>
                                 <td>{{ $invoice->total_hours }}</td>
                                 <td>{{ $invoice->created_at->format('d M  Y') }}</td>

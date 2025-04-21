@@ -27,7 +27,19 @@ class InvoiceRepository extends BaseRepository {
                 FROM invoice_has_projects
                 INNER JOIN projects ON projects.id = invoice_has_projects.project
                 WHERE invoice_has_projects.invoice = invoices.id
-            ) as total_hours
+            ) as total_hours,
+            (
+                SELECT SUM(projects.rate_per_hour)
+                FROM invoice_has_projects
+                INNER JOIN projects ON projects.id = invoice_has_projects.project
+                WHERE invoice_has_projects.invoice = invoices.id
+            ) as total_rate_per_hour,
+            (
+                SELECT FORMAT(SUM(projects.rate_per_hour * projects.total_hours), 2)
+                FROM invoice_has_projects
+                INNER JOIN projects ON projects.id = invoice_has_projects.project
+                WHERE invoice_has_projects.invoice = invoices.id
+            ) as total_income
         ')
         ->leftJoin('users', 'users.id', '=', 'invoices.client')
         ->with([
