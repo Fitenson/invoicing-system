@@ -149,5 +149,17 @@ class InvoiceController extends BaseController {
      *  @param string $id       Pass id of the selected Invoice record
     */
     public function sendEmail(string $id)
-    {}
+    {
+        $send_email = $this->invoice_service->sendEmail($id);
+
+        if($send_email) {
+            return response()->json([
+                'message' => 'Success'
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Failed'
+        ], 400);
+    }
 }

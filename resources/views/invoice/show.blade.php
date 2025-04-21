@@ -17,13 +17,14 @@
             <i class="fas fa-file-pdf me-1 mx-2"></i> PDF
         </button>
 
-        <button form="emailPDF" type="submit" name="action" value="email" class="btn btn-primary">
+        <button form="sendEmail" type="submit" name="action" value="email" class="btn btn-primary">
             <i class="fas fa-envelope me-1"></i> Email
         </button>
     </div>
 
     <!-- PDF Form using GET method -->
     <form id="generatePDF" method="GET" action="{{ route('invoices.generatePDF', $invoice['id']) }}" target="_blank"></form>
+    <form id="sendEmail" method="GET" action="{{ route('invoices.sendEmail', $invoice['id']) }}" target="_blank"></form>
 
     <h3 class="mb-4">Edit Invoice</h3>
 

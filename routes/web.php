@@ -90,11 +90,10 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::get('/{id}', [InvoiceViewController::class, 'show'])->name('show');
         Route::put('/update/{id}', [InvoiceController::class, 'update'])->name('update');
         Route::post('/store-project/{id}', [InvoiceController::class, 'storeProject'])->name('storeProject');
-        Route::put('/send-email/{id}', [InvoiceController::class, 'sendEmail'])->name('sendEmail');
+        Route::get('/send-email/{id}', [InvoiceController::class, 'sendEmail'])->name('sendEmail');
 
         Route::delete('/{id}', [InvoiceController::class, 'destroy'])->name('destroy');
 
         Route::delete('/destroy-project/{id}', [InvoiceController::class, 'destroyProjects'])->name('destroyProjects');
-
     });
 });

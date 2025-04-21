@@ -210,14 +210,27 @@ class InvoiceService extends BaseService {
     }
 
 
-    public function generateInvoicePDF($invoice)
+    public function generateInvoicePDF($invoice, $isSendEmail = false)
     {
         $invoice_has_projects = $invoice['projects'];
 
-        return SnappyPdf::loadView('invoice.pdf-template', [
-            'invoice' => $invoice,
-            'invoice_has_projects' => $invoice_has_projects
-        ]);
+        if($isSendEmail) {
+            $options = [
+                'no-images' => true,
+            ];
+
+            $pdf = SnappyPdf::loadView('invoice.pdf-template', [
+                'invoice' => $invoice,
+                'invoice_has_projects' => $invoice_has_projects
+            ])->setOptions($options);
+        } else {
+            $pdf = SnappyPdf::loadView('invoice.pdf-template', [
+                'invoice' => $invoice,
+                'invoice_has_projects' => $invoice_has_projects
+            ]);
+        }
+
+        return $pdf;
     }
 
 
@@ -225,7 +238,7 @@ class InvoiceService extends BaseService {
     {
         try {
             $invoice = $this->findInvoice($id);
-            $pdf = $this->generateInvoicePDF($invoice);
+            $pdf = $this->generateInvoicePDF($invoice, true);
 
             // Prepare mail data
             $mail_data = [
@@ -247,6 +260,9 @@ class InvoiceService extends BaseService {
 
             return true;
         } catch(\Exception $error) {
+            echo '<pre>';
+            print_r($error->getMessage());
+            die;
             return false;
         }
     }
