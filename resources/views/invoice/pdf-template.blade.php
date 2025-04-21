@@ -72,8 +72,9 @@
                 </tbody>
             </table>
 
-                        <!-- Total hours -->
-                <p class="form-control-plaintext mb-3">Total Hours: {{ $invoice['total_hours'] ?? 0 }}</p>
+            <p class="form-control-plaintext mb-3">Total Rate/Hour: {{ $invoice['total_rate_per_hour'] ?? 0 }}</p>
+            <p class="form-control-plaintext mb-3">Total Hours: {{ $invoice['total_hours'] ?? 0 }}</p>
+            <p class="form-control-plaintext mb-3">Total Income(RM): {{ $invoice['total_income'] ?? 0 }}</p>
             </div>
         </div>
     </div>
