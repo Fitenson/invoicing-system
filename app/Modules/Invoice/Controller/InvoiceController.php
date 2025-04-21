@@ -143,4 +143,11 @@ class InvoiceController extends BaseController {
 
         return $pdf->inline("invoice_{$invoice['invoice_number']}.pdf");
     }
+
+
+    /**
+     *  @param string $id       Pass id of the selected Invoice record
+    */
+    public function sendEmail(string $id)
+    {}
 }

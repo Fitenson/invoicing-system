@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 
 use App\Common\Service\BaseService;
+use App\Modules\Invoice\Mail\InvoiceMail;
 use App\Modules\Invoice\Model\Invoice;
 use App\Modules\Invoice\Model\InvoiceHasProjects;
 use App\Modules\Invoice\Repository\InvoiceRepository;
@@ -13,7 +14,8 @@ use App\Modules\Project\Model\Project;
 use App\Modules\Project\Service\ProjectService;
 use App\Modules\User\Model\User;
 use App\Modules\User\Service\UserService;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceService extends BaseService {
     private InvoiceRepository $invoice_repository;
@@ -202,6 +204,12 @@ class InvoiceService extends BaseService {
     }
 
 
+    public function getTotalIncome()
+    {
+        return $this->invoice_repository->getTotalIncome();
+    }
+
+
     public function generateInvoicePDF($invoice)
     {
         $invoice_has_projects = $invoice['projects'];
@@ -213,8 +221,33 @@ class InvoiceService extends BaseService {
     }
 
 
-    public function getTotalIncome()
+    public function sendEmail(string $id)
     {
-        return $this->invoice_repository->getTotalIncome();
+        try {
+            $invoice = $this->findInvoice($id);
+            $pdf = $this->generateInvoicePDF($invoice);
+
+            // Prepare mail data
+            $mail_data = [
+                'client_name' => $invoice['client_name'],
+                'invoice_number' => $invoice['invoice_number'],
+                'total_income' => $invoice['total_income'],
+            ];
+
+            $auth_user = Auth::user();
+            $user_email = $auth_user->email;
+
+            Mail::to($user_email)->send(
+                (new InvoiceMail($mail_data))->attachData(
+                    $pdf->output(),
+                    "invoice_{$invoice['invoice_number']}.pdf",
+                    ['mime' => 'application/pdf']
+                )
+            );
+
+            return true;
+        } catch(\Exception $error) {
+            return false;
+        }
     }
 }
