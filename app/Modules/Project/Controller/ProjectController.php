@@ -33,7 +33,7 @@ class ProjectController extends BaseController {
         $post_data = $request->validate([
             'name' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:255',
-            'client' => 'nullable|string',
+            'client' => 'nullable|exists:users,id',
             'rate_per_hour' => 'nullable|string',
             'total_hours' => 'nullable|string',
         ]);
