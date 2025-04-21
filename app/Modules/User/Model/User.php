@@ -4,8 +4,8 @@ namespace App\Modules\User\Model;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Modules\User\Model\BaseAuthenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -13,29 +13,9 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Modules\User\Factory\UserFactory;
 
 
-class User extends Authenticatable
+class User extends BaseAuthenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function($model) {
-            $model->id = Str::uuid()->toString();
-            $User = Auth::user();
-            if(!empty($User)) {
-                $model->created_by = $User->id;
-            }
-        });
-
-        static::updating(function($model) {
-            $User = Auth::user();
-            if(!empty($User)) {
-                $model->updated_by = $User->id;
-            }
-        });
-    }
-
     /**
      * The attributes that are mass assignable.
      *

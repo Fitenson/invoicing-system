@@ -39,8 +39,8 @@
 <body>
     <div class="container">
         <h1>Hello, {{ $client_name }}</h1>
-        <h3>Invoice Number: {{ $invoice_number }}</h3>
-        <h5>Total Income: {{ $total_income }}</h5>
+        <h2>Invoice Number: {{ $invoice_number }}</h2>
+        <h3>Total Income (RM): {{ $total_income }}</h3>
         <p>
             This is a simple email notification to let you know that the process has been completed successfully.
         </p>
