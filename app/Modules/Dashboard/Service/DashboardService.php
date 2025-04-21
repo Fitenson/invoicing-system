@@ -20,16 +20,18 @@ class DashboardService extends BaseService {
     }
 
 
-    public function getTotalRecords()
+    public function getDashboardData()
     {
         $total_client = $this->user_service->getTotalUser();
         $total_project = $this->project_service->getTotalProject();
         $total_invoice = $this->invoice_service->getTotalInvoice();
+        $total_income = $this->invoice_service->getTotalIncome();
 
         return [
             'total_client' => $total_client,
             'total_project' => $total_project,
             'total_invoice' => $total_invoice,
+            'total_income' => $total_income
         ];
     }
 }

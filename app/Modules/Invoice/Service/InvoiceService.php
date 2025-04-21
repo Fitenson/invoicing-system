@@ -211,4 +211,10 @@ class InvoiceService extends BaseService {
             'invoice_has_projects' => $invoice_has_projects
         ]);
     }
+
+
+    public function getTotalIncome()
+    {
+        return $this->invoice_repository->getTotalIncome();
+    }
 }

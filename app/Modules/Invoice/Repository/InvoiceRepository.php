@@ -9,6 +9,7 @@ use App\Common\Repository\BaseRepository;
 use App\Modules\Invoice\Model\Invoice;
 use App\Modules\Invoice\Model\InvoiceHasProjects;
 use App\Modules\Project\Model\Project;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceRepository extends BaseRepository {
     public function getPaginated(string $class_name = Invoice::class, array $params, array $selects, array $extra_filters = [])
@@ -86,4 +87,22 @@ class InvoiceRepository extends BaseRepository {
             return false;
         }
     }
+
+
+    public function getTotalIncome()
+    {
+        $invoice = Invoice::selectRaw('
+            (
+                SELECT FORMAT(SUM(projects.rate_per_hour * projects.total_hours), 2)
+                FROM invoice_has_projects
+                INNER JOIN projects ON projects.id = invoice_has_projects.project
+                WHERE invoice_has_projects.invoice = invoices.id
+            ) as total_income
+        ')
+        ->where('invoices.created_by', Auth::id())
+        ->first();
+
+        return $invoice ? $invoice->total_income : '0.00';
+    }
+
 }
