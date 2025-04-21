@@ -53,4 +53,11 @@ class InvoiceMail extends Mailable
     {
         return [];
     }
+
+
+    public function build()
+    {
+        return $this->subject("Invoice #{$this->mail_data['invoice_number']}")
+        ->view('invoice.email.invoice-email');
+    }
 }

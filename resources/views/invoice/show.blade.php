@@ -17,14 +17,14 @@
             <i class="fas fa-file-pdf me-1 mx-2"></i> PDF
         </button>
 
-        <button form="sendEmail" type="submit" name="action" value="email" class="btn btn-primary">
+        <button id="sendEmailBtn" class="btn btn-primary">
             <i class="fas fa-envelope me-1"></i> Email
         </button>
     </div>
 
     <!-- PDF Form using GET method -->
     <form id="generatePDF" method="GET" action="{{ route('invoices.generatePDF', $invoice['id']) }}" target="_blank"></form>
-    <form id="sendEmail" method="GET" action="{{ route('invoices.sendEmail', $invoice['id']) }}" target="_blank"></form>
+    <form id="sendEmail" method="POST" action="{{ route('invoices.sendEmail', $invoice['id']) }}" target="_blank"></form>
 
     <h3 class="mb-4">Edit Invoice</h3>
 
@@ -237,8 +237,6 @@
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Add click event listener for the add project button as an alternative to inline onclick
-
     // Event listeners for delete buttons
     document.querySelectorAll('.delete-project-btn').forEach(button => {
         button.addEventListener('click', function () {
@@ -269,6 +267,48 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+document.getElementById('sendEmailBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+
+    const form = document.getElementById('sendEmail');
+    const formData = new FormData(form);
+
+    // Show loading indicator
+    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Sending...';
+    this.disabled = true;
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Reset button state
+        this.innerHTML = '<i class="fas fa-envelope me-1"></i> Email';
+        this.disabled = false;
+
+        let message = data.message;
+
+        console.log('Data: ', data)
+        console.log('Message: ', message)
+
+        if (message === "Success") {
+            alert('Email sent successfully! Check your inbox');
+        } else {
+            alert('Failed to send email. Please try again.');
+        }
+    })
+    .catch(error => {
+        // Show error alert
+        alert('An error occurred: ' + error.message);
+    });
+});
 });
 </script>
 @endsection

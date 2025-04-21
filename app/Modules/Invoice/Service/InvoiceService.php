@@ -3,6 +3,7 @@
 namespace App\Modules\Invoice\Service;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 
 use App\Common\Service\BaseService;
@@ -210,25 +211,20 @@ class InvoiceService extends BaseService {
     }
 
 
-    public function generateInvoicePDF($invoice, $isSendEmail = false)
+    public function generateInvoicePDF($invoice)
     {
         $invoice_has_projects = $invoice['projects'];
 
-        if($isSendEmail) {
-            $options = [
-                'no-images' => true,
-            ];
+        $pdf = SnappyPdf::loadView('invoice.pdf-template', [
+            'invoice' => $invoice,
+            'invoice_has_projects' => $invoice_has_projects
+        ]);
 
-            $pdf = SnappyPdf::loadView('invoice.pdf-template', [
-                'invoice' => $invoice,
-                'invoice_has_projects' => $invoice_has_projects
-            ])->setOptions($options);
-        } else {
-            $pdf = SnappyPdf::loadView('invoice.pdf-template', [
-                'invoice' => $invoice,
-                'invoice_has_projects' => $invoice_has_projects
-            ]);
-        }
+        // Enable external connections
+        $pdf->setOption('enable-external-links', true);
+        $pdf->setOption('enable-javascript', true);
+        $pdf->setOption('javascript-delay', 1000);
+        $pdf->setOption('no-stop-slow-scripts', true);
 
         return $pdf;
     }
@@ -238,7 +234,7 @@ class InvoiceService extends BaseService {
     {
         try {
             $invoice = $this->findInvoice($id);
-            $pdf = $this->generateInvoicePDF($invoice, true);
+            $pdf = $this->generateInvoicePDF($invoice);
 
             // Prepare mail data
             $mail_data = [
@@ -249,20 +245,17 @@ class InvoiceService extends BaseService {
 
             $auth_user = Auth::user();
             $user_email = $auth_user->email;
+            $file_name = "invoice_{$invoice['invoice_number']}.pdf";
 
             Mail::to($user_email)->send(
-                (new InvoiceMail($mail_data))->attachData(
-                    $pdf->output(),
-                    "invoice_{$invoice['invoice_number']}.pdf",
-                    ['mime' => 'application/pdf']
-                )
+                (new InvoiceMail($mail_data))
+                ->attachData($pdf->output(), $file_name, [
+                    'mime' => 'application/pdf',
+                ])
             );
 
             return true;
         } catch(\Exception $error) {
-            echo '<pre>';
-            print_r($error->getMessage());
-            die;
             return false;
         }
     }
