@@ -22,7 +22,7 @@
         <div class="mb-3">
             <label for="name" class="form-label">Project Name</label>
             <input type="text" class="form-control @error('name') is-invalid @enderror"
-                id="name" name="name" value="{{ old('name') }}" required>
+                id="name" name="name" value="{{ old('name') }}">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -31,7 +31,7 @@
         <!-- User Dropdown -->
         <div class="mb-3">
             <label for="client" class="form-label">Client</label>
-            <select class="form-select @error('client') is-invalid @enderror" id="client" name="client" required>
+            <select class="form-select @error('client') is-invalid @enderror" id="client" name="client">
                 <option value="">-- Select Client --</option>
                 @foreach($users as $user)
                     <option value="{{ $user['id'] }}" {{ old('client') == $user['id'] ? 'selected' : '' }}>

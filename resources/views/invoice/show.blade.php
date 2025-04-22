@@ -9,7 +9,7 @@
             <i class="fas fa-times me-1"></i> Cancel
         </a>
 
-        <button form="createInvoiceForm" type="submit" class="btn btn-success">
+        <button form="updateInvoiceForm" type="submit" class="btn btn-success">
             <i class="fas fa-save me-1"></i> Update
         </button>
 
@@ -42,7 +42,7 @@
         <!-- Client -->
         <div class="mb-3">
             <label for="client" class="form-label">Client</label>
-            <select class="form-select @error('client') is-invalid @enderror" id="client" name="invoice[client]" required>
+            <select class="form-select @error('client') is-invalid @enderror" id="client" name="invoice[client]">
                 <option value="">-- Select Client --</option>
                 @foreach($users as $user)
                     <option value="{{ $user['id'] }}" {{ old('client', $invoice['client']) == $user['id'] ? 'selected' : '' }}>

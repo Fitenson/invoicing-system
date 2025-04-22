@@ -52,7 +52,7 @@
         <div class="mb-3">
             <label for="phone_number" class="form-label">Phone Number</label>
             <input type="text" class="form-control @error('phone_number') is-invalid @enderror"
-                id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required>
+                id="phone_number" name="phone_number" value="{{ old('phone_number') }}">
             @error('phone_number')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -62,7 +62,7 @@
         <div class="mb-3">
             <label for="company" class="form-label">Company</label>
             <input type="text" class="form-control @error('company') is-invalid @enderror"
-                id="company" name="company" value="{{ old('company') }}" required>
+                id="company" name="company" value="{{ old('company') }}">
             @error('company')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

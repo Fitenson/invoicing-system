@@ -26,7 +26,7 @@
         <!-- Client -->
         <div class="mb-3">
             <label for="client" class="form-label">Client</label>
-            <select class="form-select" id="client" name="invoice[client]" required>
+            <select class="form-select" id="client" name="invoice[client]">
                 <option value="">-- Select Client --</option>
                 @foreach($users as $user)
                     <option value="{{ $user['id'] }}">{{ $user['name'] }}</option>
