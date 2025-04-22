@@ -41,6 +41,10 @@ class InvoiceService extends BaseService {
     }
 
 
+    /**
+     *  Use to implement server side pagination, filtering and sorting
+     *  @param array $params        Parameter that determine which page to render
+    */
     public function getPaginated(array $params)
     {
         $selects = [
@@ -69,13 +73,23 @@ class InvoiceService extends BaseService {
     }
 
 
+    /**
+     *  Return Invoice data
+     *  @param string $id       Pass id of the selected Invoice
+    */
     public function show(string $id)
     {
         $invoice = $this->invoice_repository->show(Invoice::class, $id);
         return $invoice;
     }
 
-
+    /**
+     *  Create new data based on provided $class_name
+     *  @param string $class_name       Pass class name of a model within Invoice module
+     *  @param array $data              Pass data to be saved in database
+     *
+     *  @return Model $model            Return model of the saved data
+    */
     public function create(string $class_name, array $data)
     {
         $model = null;
@@ -98,7 +112,10 @@ class InvoiceService extends BaseService {
     }
 
 
-
+    /**
+     *  Create an invoice and link associated projects to the saved invoice record
+     *  @param array $data
+    */
     public function createInvoice(array $data)
     {
         $invoice_data = $data['invoice'];
@@ -128,6 +145,9 @@ class InvoiceService extends BaseService {
     }
 
 
+    /**
+     *  Used for display clients dropdown and project dropdown
+    */
     public function findAll(string $class_name)
     {
         $data = [];
@@ -149,6 +169,9 @@ class InvoiceService extends BaseService {
     }
 
 
+    /**
+     *  Return Invoice along with the Projects data associated with the selected Invoice
+    */
     public function findInvoice(string $id)
     {
         $invoice = $this->invoice_repository->findInvoice($id);
@@ -157,6 +180,12 @@ class InvoiceService extends BaseService {
     }
 
 
+    /**
+     *  Update a record based on class name of a model within Invoice module
+     *  @param string $id               Pass id of the selected record
+     *  @param array $data              Pass data to be saved on the database
+     *  @param string $class_name       Pass class name of a model within Invoice module
+    */
     public function update(string $id, array $data, string $class_name)
     {
         $model = null;
@@ -174,6 +203,11 @@ class InvoiceService extends BaseService {
     }
 
 
+    /**
+     *  Update an Invoice record
+     *  @param string $id               Pass id of the selected record
+     *  @param array $data              Pass data to be saved on the database
+    */
     public function updateInvoice(string $id, array $data)
     {
         $invoice_data = $data['invoice'];
@@ -202,25 +236,38 @@ class InvoiceService extends BaseService {
         }
     }
 
-
+    /**
+     *  Delete a record based on provided class name
+     *
+     *  @param string $class_name       Pass class name of a model within Invoice module
+     *  @param string $id               Pass the id of the selected record to be deleted
+    */
     public function destroy(string $class_name, string $id)
     {
         return $this->invoice_repository->destroy($class_name, $id);
     }
 
 
+    /**
+     *  Return the total number of invoices in the system
+    */
     public function getTotalInvoice()
     {
         return $this->invoice_repository->getTotalRecord(Invoice::class);
     }
 
-
+    /**
+     *  Return the total income of invoices in the system
+    */
     public function getTotalIncome()
     {
         return $this->invoice_repository->getTotalIncome();
     }
 
-
+    /**
+     *  Generate Invoice PDF
+     *  @param array $invoice       Pass Invoice data in array format
+    */
     public function generateInvoicePDF($invoice)
     {
         $invoice_has_projects = $invoice['projects'];
@@ -234,6 +281,10 @@ class InvoiceService extends BaseService {
     }
 
 
+    /**
+     *  Send Email with Invoice PDF attached to the email
+     *  @param string $Id       Pass id of the selected Invoice
+    */
     public function sendEmail(string $id)
     {
         try {
