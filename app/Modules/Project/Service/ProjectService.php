@@ -2,6 +2,9 @@
 
 namespace App\Modules\Project\Service;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Support\Facades\DB;
+
 use App\Common\Service\BaseService;
 use App\Modules\Project\Repository\ProjectRepository;
 use App\Modules\Project\Model\Project;
@@ -51,9 +54,16 @@ class ProjectService extends BaseService {
     */
     public function create(array $data)
     {
-        $project = $this->project_repository->create(Project::class, $data);
+        try {
+            DB::beginTransaction();
+            $project = $this->project_repository->create(Project::class, $data);
+            DB::commit();
 
-        return $project;
+            return $project;
+        } catch(\Exception $error) {
+            DB::rollBack();
+            throw new HttpException(422, 'Failed to create a project: ' . $error->getMessage());
+        }
     }
 
     /**
@@ -82,7 +92,17 @@ class ProjectService extends BaseService {
     public function update(string $id, array $data)
     {
         $project = $this->project_repository->findById(Project::class, $id);
-        return $this->project_repository->update($project, $data);
+
+        try {
+            DB::beginTransaction();
+            $project = $this->project_repository->update($project, $data);
+            DB::commit();
+
+            return $project;
+        } catch(\Exception $error) {
+            DB::rollBack();
+            throw new HttpException(422, 'Failed to update project: ' . $error->getMessage());
+        }
     }
 
     /**
@@ -92,7 +112,16 @@ class ProjectService extends BaseService {
     */
     public function destroy(string $id)
     {
-        return $this->project_repository->destroy(Project::class, $id);
+        try {
+            DB::beginTransaction();
+            $result = $this->project_repository->destroy(Project::class, $id);
+            DB::commit();
+
+            return $result;
+        } catch(\Exception $error) {
+            DB::rollBack();
+            throw new HttpException(422, 'Failed to delete project: '. $error->getMessage());
+        }
     }
 
     /**

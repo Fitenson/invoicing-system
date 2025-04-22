@@ -2,7 +2,7 @@
 
 namespace App\Modules\User\Service;
 
-use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
@@ -40,13 +40,20 @@ class UserService extends BaseService {
 
     public function create(array $data)
     {
-        //  Default password
-        $password = '88888888';
-        $data['password'] = Hash::make($password);
+        try {
+            DB::beginTransaction();
+            //  Default password
+            $password = '88888888';
+            $data['password'] = Hash::make($password);
 
-        $user = $this->user_repository->create(User::class, $data);
+            $user = $this->user_repository->create(User::class, $data);
+            DB::commit();
 
-        return $user;
+            return $user;
+        } catch(\Exception $error) {
+            DB::rollBack();
+            throw new HttpException(422, 'Failed to create user: ' . $error->getMessage());
+        }
     }
 
 
@@ -58,14 +65,29 @@ class UserService extends BaseService {
 
     public function update(string $id, array $data)
     {
-        $user = $this->user_repository->findById(User::class, $id);
-        return $this->user_repository->update($user, $data);
+        try {
+            DB::beginTransaction();
+            $user = $this->user_repository->findById(User::class, $id);
+            DB::commit();
+
+            return $this->user_repository->update($user, $data);
+        } catch(\Exception $error) {
+            DB::rollBack();
+            throw new HttpException(422, 'Failed to update user: ' . $error->getMessage());
+        }
     }
 
 
     public function destroy(string $id)
     {
-        return $this->user_repository->destroy(User::class, $id);
+        try {
+            DB::beginTransaction();
+            $this->user_repository->destroy(User::class, $id);
+            DB::commit();
+            return true;
+        } catch(\Exception $error) {
+            throw new HttpException(422, 'Failed to delete user: ' . $error->getMessage());
+        }
     }
 
 

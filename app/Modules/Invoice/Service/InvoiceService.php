@@ -2,8 +2,10 @@
 
 namespace App\Modules\Invoice\Service;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 
 use App\Common\Service\BaseService;
@@ -15,8 +17,6 @@ use App\Modules\Project\Model\Project;
 use App\Modules\Project\Service\ProjectService;
 use App\Modules\User\Model\User;
 use App\Modules\User\Service\UserService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 
 /**
@@ -232,7 +232,7 @@ class InvoiceService extends BaseService {
             return $invoice;
         } catch(\Exception $error) {
             DB::rollBack();
-            return false;
+            throw new HttpException(422, 'Failed to update invoice: ' . $error->getMessage());
         }
     }
 
@@ -244,7 +244,16 @@ class InvoiceService extends BaseService {
     */
     public function destroy(string $class_name, string $id)
     {
-        return $this->invoice_repository->destroy($class_name, $id);
+        try {
+            DB::beginTransaction();
+            $result =  $this->invoice_repository->destroy($class_name, $id);
+            DB::commit();
+
+            return $result;
+        } catch(\Exception $error) {
+            DB::rollBack();
+            throw new HttpException(422, 'Failed to delete invoice: ' . $error->getMessage());
+        }
     }
 
 

@@ -39,7 +39,7 @@ abstract class BaseRepository {
      *
      *  @return Model $model
     */
-    public function update(Model $model, array $data): bool
+    public function update(Model $model, array $data)
     {
         $model = $model->update($data);
         return $model;
