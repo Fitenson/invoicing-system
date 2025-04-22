@@ -11,6 +11,17 @@ use App\Modules\User\Model\User;
 use App\Modules\Project\Model\Project;
 
 
+/**
+ * ViewController for rendering and displaying data on the Invoice.
+ *
+ * This controller is responsible for:
+ * - Rendering Blade views
+ * - Coordinating with various Services from other modules to retrieve and display data
+ *
+ * Responsibilities:
+ * - Should remain thin and focused only on view-related logic
+ * - Must delegate business logic to Service layers
+ */
 class InvoiceViewController extends BaseController {
     private InvoiceService $invoice_service;
 

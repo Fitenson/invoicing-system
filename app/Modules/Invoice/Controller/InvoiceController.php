@@ -9,7 +9,13 @@ use App\Modules\Invoice\Model\Invoice;
 use App\Modules\Invoice\Model\InvoiceHasProjects;
 
 
-
+/**
+ * Controller for handling API requests related to Invoice moduie.
+ *
+ * This layer is responsible for receiving HTTP requests,
+ * passing input data to the Service layer, and returning appropriate responses.
+ * Should remain thin and free of business logic.
+ */
 class InvoiceController extends BaseController {
     private InvoiceService $invoice_service;
 
@@ -21,6 +27,9 @@ class InvoiceController extends BaseController {
 
     /**
      *  Index API
+     *  Display all Invoices data
+     *
+     *  Note: Currently notbeing used
     */
     public function index(Request $request)
     {
@@ -36,6 +45,7 @@ class InvoiceController extends BaseController {
 
     /**
      *  Create new Invoice API
+     *  @param Request $request     POST request containing the FormData of the Invoice data
     */
     public function store(Request $request)
     {
@@ -71,6 +81,7 @@ class InvoiceController extends BaseController {
 
 
     /**
+     * Update Invoice record
      * @param string $id       Pass the id of the selected Invoice record to be updated
      * @param Request $request     POST request containing the FormData of the fields to be updated
     */
@@ -89,6 +100,7 @@ class InvoiceController extends BaseController {
 
 
     /**
+     *  Delete selected Invoice record
      *  @param string $id       Pass the id of the selected Invoice record to be deleted
     */
     public function destroy(string $id)
@@ -111,6 +123,7 @@ class InvoiceController extends BaseController {
 
 
     /**
+     *  Delete selected Project associated with an Invoice record
      *  @param string $id       Pass id of the selected InvoiceHasProjects record to be deleted
     */
     public function destroyProjects(string $id)
@@ -134,6 +147,7 @@ class InvoiceController extends BaseController {
 
 
     /**
+     *  Generate PDF to be displayed on the browser
      *  @param string $id       Pass id of the selected Invoice record
     */
     public function generatePDF(string $id)
@@ -146,6 +160,7 @@ class InvoiceController extends BaseController {
 
 
     /**
+     *  Send an email with the attached Invoice PDF
      *  @param string $id       Pass id of the selected Invoice record
     */
     public function sendEmail(string $id)

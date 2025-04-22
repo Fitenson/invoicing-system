@@ -13,6 +13,12 @@ use App\Modules\Invoice\Model\InvoiceHasProjects;
 use App\Modules\Project\Model\Project;
 
 
+/**
+ * Repository layer for the Invoice module.
+ *
+ * Responsible for interacting with data sources (e.g., Eloquent models or raw DB queries).
+ * This layer abstracts data retrieval and persistence logic, keeping it separate from business logic.
+ */
 class InvoiceRepository extends BaseRepository {
     /**
      *  @param string $class_name       Class name of a model. Example: Invoice::class

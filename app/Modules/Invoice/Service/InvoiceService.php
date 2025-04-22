@@ -18,6 +18,16 @@ use App\Modules\User\Service\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
+
+/**
+ * Service Layer for Invoice module.
+ *
+ * This layer is responsible for handling application-level logic,
+ * separating complex business operations from the data layer (e.g., repositories or models).
+ *
+ * Typically used to coordinate saving/updating data, validations, or calling other services,
+ * while keeping controllers and models clean from business logic.
+ */
 class InvoiceService extends BaseService {
     private InvoiceRepository $invoice_repository;
     private UserService $user_service;
@@ -219,12 +229,6 @@ class InvoiceService extends BaseService {
             'invoice' => $invoice,
             'invoice_has_projects' => $invoice_has_projects
         ]);
-
-        // Enable external connections
-        $pdf->setOption('enable-external-links', true);
-        $pdf->setOption('enable-javascript', true);
-        $pdf->setOption('javascript-delay', 1000);
-        $pdf->setOption('no-stop-slow-scripts', true);
 
         return $pdf;
     }

@@ -7,6 +7,16 @@ use App\Modules\Invoice\Service\InvoiceService;
 use App\Modules\Project\Service\ProjectService;
 use App\Modules\User\Service\UserService;
 
+
+/**
+ * Service Layer for Dashboard module.
+ *
+ * This layer is responsible for handling application-level logic,
+ * separating complex business operations from the data layer (e.g., repositories or models).
+ *
+ * Typically used to coordinate saving/updating data, validations, or calling other services,
+ * while keeping controllers and models clean from business logic.
+ */
 class DashboardService extends BaseService {
     private UserService $user_service;
     private ProjectService $project_service;
