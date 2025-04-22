@@ -6,9 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use App\Common\Model\BaseModel;
 
+use App\Modules\Project\Factory\ProjectFactory;
+
 
 class Project extends BaseModel
 {
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+
     use HasFactory;
 
     /**
@@ -35,4 +41,10 @@ class Project extends BaseModel
     protected $casts = [
         'id' => 'string',
     ];
+
+
+    public static function newFactory()
+    {
+        return ProjectFactory::new();
+    }
 }
