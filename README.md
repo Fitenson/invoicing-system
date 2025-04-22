@@ -67,3 +67,9 @@ Update the paths for the binary in config/snappy.php if needed:
 🖥️ Serve the Project
 - Start the local development server:
 - php artisan serve
+
+
+How to use the Invoicing System
+1) Register your name and email on the registration page
+2) After registration, go to the login page and enter your name and password
+3) After logging in, you can manage projects, clients, and invoices created in the system

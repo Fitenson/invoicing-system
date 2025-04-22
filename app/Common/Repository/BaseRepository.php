@@ -39,10 +39,10 @@ abstract class BaseRepository {
      *
      *  @return Model $model
     */
-    public function update(Model $model, array $data)
+    public function update(Model $model, array $data): Model
     {
-        $model = $model->update($data);
-        return $model;
+        $model->update($data);
+        return $model->fresh();
     }
 
 
