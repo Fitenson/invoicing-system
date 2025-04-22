@@ -1,4 +1,5 @@
 🧾 Welcome to My Invoicing System
+
 📌 Project Overview
 PHP Version: 8.2
 
@@ -64,3 +65,4 @@ Update the paths for the binary in config/snappy.php if needed:
 
 🖥️ Serve the Project
 - Start the local development server:
+- php artisan serve
