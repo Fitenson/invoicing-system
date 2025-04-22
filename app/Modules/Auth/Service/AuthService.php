@@ -11,6 +11,15 @@ use App\Modules\User\Model\User;
 use App\Modules\Auth\Repository\AuthRepository;
 
 
+/**
+ * Service Layer for Invoice module.
+ *
+ * This layer is responsible for handling application-level logic,
+ * separating complex business operations from the data layer (e.g., repositories or models).
+ *
+ * Typically used to coordinate saving/updating data, validations, or calling other services,
+ * while keeping controllers and models clean from business logic.
+ */
 class AuthService extends BaseService {
     private AuthRepository $auth_repository;
 
@@ -20,6 +29,9 @@ class AuthService extends BaseService {
     }
 
 
+    /**
+     *  Login API and create Laravel session
+    */
     public function login(array $post_data)
     {
         $User = User::where('name', $post_data['name'])->first();
@@ -37,6 +49,9 @@ class AuthService extends BaseService {
     }
 
 
+    /**
+     *  Register new user to the system
+    */
     public function register(array $post_data)
     {
         $User = $this->auth_repository->create(User::class, [
@@ -50,11 +65,13 @@ class AuthService extends BaseService {
 
         session(['sanctum_token' => $token]);
 
-
         return $User;
     }
 
 
+    /**
+     *  Logout user and clear Laravel session
+    */
     public function logout(Request $request)
     {
         Auth::guard('web')->logout();

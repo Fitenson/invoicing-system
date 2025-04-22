@@ -9,7 +9,13 @@ use App\Modules\User\Model\User;
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Service\AuthService;
 
-
+/**
+ * Controller for handling API requests to manage authentication flow
+ *
+ * This layer is responsible for receiving HTTP requests,
+ * passing input data to the Service layer, and returning appropriate responses.
+ * Should remain thin and free of business logic.
+ */
 class AuthController extends Controller
 {
     private AuthService $auth_service;
@@ -19,7 +25,10 @@ class AuthController extends Controller
         $this->auth_service = $auth_service;
     }
 
-    // Login and return Sanctum token
+
+    /**
+     *  Login API
+    */
     public function login(Request $request)
     {
         $post_data = $request->validate([
@@ -39,7 +48,9 @@ class AuthController extends Controller
     }
 
 
-    // Register and return Sanctum token
+    /**
+     *  Register new user to the system
+    */
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -53,7 +64,10 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-    // Logout and revoke tokens
+
+    /**
+     *  Remove session and navigate user to logout
+     * */
     public function logout(Request $request)
     {
         $this->auth_service->logout($request);
