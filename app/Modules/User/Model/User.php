@@ -15,6 +15,9 @@ use App\Modules\User\Factory\UserFactory;
 
 class User extends BaseAuthenticatable
 {
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     use HasApiTokens, HasFactory, Notifiable;
     /**
      * The attributes that are mass assignable.
