@@ -6,6 +6,14 @@ use App\Common\Controller\BaseController;
 use App\Modules\Project\Service\ProjectService;
 use Illuminate\Http\Request;
 
+
+/**
+ * Controller for handling API requests related to Project moduie.
+ *
+ * This layer is responsible for receiving HTTP requests,
+ * passing input data to the Service layer, and returning appropriate responses.
+ * Should remain thin and free of business logic.
+ */
 class ProjectController extends BaseController {
     private ProjectService $project_service;
 
@@ -14,7 +22,12 @@ class ProjectController extends BaseController {
         $this->project_service = $project_service;
     }
 
-
+    /**
+     *  Index API
+     *  Display all Projects data
+     *
+     *  Note: Currently notbeing used
+    */
     public function index(Request $request)
     {
         // $params = $request->only('param');
@@ -28,6 +41,10 @@ class ProjectController extends BaseController {
     }
 
 
+    /**
+     *  Create new Project API
+     *  @param Request $request     POST request containing the FormData of the Project data
+    */
     public function store(Request $request)
     {
         $post_data = $request->validate([
@@ -44,7 +61,12 @@ class ProjectController extends BaseController {
     }
 
 
-
+    /**
+     * Update Project record
+     *
+     * @param string $id       Pass the id of the selected Project record to be updated
+     * @param Request $request     POST request containing the FormData of the fields to be updated
+    */
     public function update(string $id, Request $request)
     {
         $post_data = $request->validate([
@@ -66,7 +88,10 @@ class ProjectController extends BaseController {
     }
 
 
-
+    /**
+     *  Delete selected Project record
+     *  @param string $id       Pass the id of the selected Project record to be deleted
+    */
     public function destroy(string $id)
     {
         $result = $this->project_service->destroy($id);

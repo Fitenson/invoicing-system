@@ -8,6 +8,17 @@ use App\Modules\User\Service\UserService;
 use Illuminate\Http\Request;
 
 
+/**
+ * ViewController for rendering and displaying data on the Project.
+ *
+ * This controller is responsible for:
+ * - Rendering Blade views
+ * - Coordinating with various Services from other modules to retrieve and display data
+ *
+ * Responsibilities:
+ * - Should remain thin and focused only on view-related logic
+ * - Must delegate business logic to Service layers
+ */
 class ProjectViewController extends BaseController {
     private ProjectService $project_service;
     private UserService $user_service;
@@ -18,6 +29,9 @@ class ProjectViewController extends BaseController {
     }
 
 
+    /**
+     *  Display and render index page
+    */
     public function index(Request $request)
     {
         $params = $request->only([
@@ -39,13 +53,18 @@ class ProjectViewController extends BaseController {
     }
 
 
+    /**
+     *  Display and render create Project page
+    */
     public function create() {
         $users = $this->user_service->findAll();
 
         return view('project.create', compact('users'));
     }
 
-
+    /**
+     *  Display and render show Project page
+    */
     public function show(string $id) {
         $project = $this->project_service->show($id);
         $users = $this->user_service->findAll();
