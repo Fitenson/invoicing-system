@@ -51,13 +51,19 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::prefix('user')->as('users.')->group(function () {
         Route::get('/', [UserViewController::class, 'index'])->name('index');
 
-        //  Create routes
+        //  Render create User page
         Route::get('/create', [UserViewController::class, 'create'])->name('create');
+
+        //  Create User API
         Route::post('/store', [UserController::class, 'store'])->name('store');
 
+        //  Render User page
         Route::get('/{id}', [UserViewController::class, 'show'])->name('show');
+
+        //  Update User API
         Route::put('/update/{id}', [UserController::class, 'update'])->name('update');
 
+        //  Update User API
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
     });
 
@@ -66,34 +72,52 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::prefix('project')->as('projects.')->group(function () {
         Route::get('/', [ProjectViewController::class, 'index'])->name('index');
 
-        //  Create routes
+        //  Render create Project page
         Route::get('/create', [ProjectViewController::class, 'create'])->name('create');
+
+        //  Create Project API
         Route::post('/store', [ProjectController::class, 'store'])->name('store');
 
+        //  Render Project page
         Route::get('/{id}', [ProjectViewController::class, 'show'])->name('show');
+
+        //  Update Project API
         Route::put('/update/{id}', [ProjectController::class, 'update'])->name('update');
 
+        //  Delete Project API
         Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('destroy');
     });
 
 
     //  Invoice routes
     Route::prefix('invoice')->as('invoices.')->group(function () {
+        //  Index route
         Route::get('/', [InvoiceViewController::class, 'index'])->name('index');
 
-        //  Create routes
+        //  Render create Invoice page
         Route::get('/create', [InvoiceViewController::class, 'create'])->name('create');
+        //  Create Invoice API
         Route::post('/store', [InvoiceController::class, 'store'])->name('store');
 
-        Route::get('/generate-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('generatePDF');
-
+        //  Render Invoice page
         Route::get('/{id}', [InvoiceViewController::class, 'show'])->name('show');
-        Route::put('/update/{id}', [InvoiceController::class, 'update'])->name('update');
-        Route::post('/store-project/{id}', [InvoiceController::class, 'storeProject'])->name('storeProject');
-        Route::post('/send-email/{id}', [InvoiceController::class, 'sendEmail'])->name('sendEmail');
 
+        //  Update Invoice API
+        Route::put('/update/{id}', [InvoiceController::class, 'update'])->name('update');
+
+        //  Delete Invoice API
         Route::delete('/{id}', [InvoiceController::class, 'destroy'])->name('destroy');
 
+        //  Add project to an Invoice record API
+        Route::post('/store-project/{id}', [InvoiceController::class, 'storeProject'])->name('storeProject');
+
+        //  Remove project from an Invoice record API
         Route::delete('/destroy-project/{id}', [InvoiceController::class, 'destroyProjects'])->name('destroyProjects');
+
+        //  Display PDF on browser
+        Route::get('/generate-pdf/{id}', [InvoiceController::class, 'generatePDF'])->name('generatePDF');
+
+        //  Send Email with Invoice PDF attached to the email
+        Route::post('/send-email/{id}', [InvoiceController::class, 'sendEmail'])->name('sendEmail');
     });
 });

@@ -6,7 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-
+/**
+ * Class GlobalModelObserver
+ *
+ * This observer handles global model events such as created, updated, deleted, etc.,
+ * for one or more Eloquent models in the application.
+ *
+ * You can register this observer in a service provider (typically `AppServiceProvider`)
+ * to observe multiple models or shared behaviors across different models.
+*/
 class GlobalModelObserver
 {
     /**
