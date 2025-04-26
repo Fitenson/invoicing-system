@@ -73,3 +73,10 @@ How to use the Invoicing System
 1) Register your name and email on the registration page
 2) After registration, go to the login page and enter your name and password
 3) After logging in, you can manage projects, clients, and invoices created in the system
+
+
+1) Run test case
+- php artisan test
+- php artisan test tests/Feature/CreateUserTest.php
+- php artisan test tests/Feature/CreateProjectTest.php
+- php artisan test tests/Feature/CreateInvoiceTest.php
