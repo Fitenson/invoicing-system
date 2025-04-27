@@ -74,9 +74,11 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => 'prefer',
+            'schema' => 'public',
+            'sslmode' => 'require', // Enforce SSL
+            // 'options' => env('DB_ENDPOINT_ID') ? ['--options=endpoint=' . env('DB_ENDPOINT_ID')] : [],
         ],
+
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
