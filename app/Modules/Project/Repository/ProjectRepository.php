@@ -2,6 +2,8 @@
 
 namespace App\Modules\Project\Repository;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
 use App\Common\Repository\BaseRepository;
 use App\Modules\Project\Model\Project;
 

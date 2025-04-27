@@ -57,7 +57,7 @@ class InvoiceRepository extends BaseRepository {
                 WHERE invoice_has_projects.invoice = invoices.id
             ) as total_rate_per_hour,
             (
-                SELECT FORMAT(SUM(projects.rate_per_hour * projects.total_hours), 2)
+                SELECT ROUND(SUM(projects.rate_per_hour * projects.total_hours), 2)
                 FROM invoice_has_projects
                 INNER JOIN projects ON projects.id = invoice_has_projects.project
                 WHERE invoice_has_projects.invoice = invoices.id

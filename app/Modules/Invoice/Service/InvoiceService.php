@@ -65,7 +65,7 @@ class InvoiceService extends BaseService {
             ->whereColumn('invoice_has_projects.invoice', 'invoices.id'),
 
             'total_income' => InvoiceHasProjects::join('projects', 'projects.id', '=', 'invoice_has_projects.project')
-            ->select(DB::raw('FORMAT(SUM(projects.total_hours * projects.rate_per_hour), 2)'))
+            ->select(DB::raw('ROUND(SUM(projects.total_hours * projects.rate_per_hour), 2)'))
             ->whereColumn('invoice_has_projects.invoice', 'invoices.id'),
         ];
 
