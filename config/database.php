@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -58,9 +58,6 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
         ],
 
         'pgsql' => [
@@ -76,7 +73,11 @@ return [
             'prefix_indexes' => true,
             'schema' => 'public',
             'sslmode' => 'require', // Enforce SSL
-            // 'options' => env('DB_ENDPOINT_ID') ? ['--options=endpoint=' . env('DB_ENDPOINT_ID')] : [],
+            'options' => []
+            // 'options' => [
+            //     PDO::ATTR_EMULATE_PREPARES => true, // If needed for compatibility
+            //     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            // ],
         ],
 
 
