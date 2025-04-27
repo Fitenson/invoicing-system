@@ -26,12 +26,10 @@ jobs:
 
       - name: Set up .env file
         run: |
+          cp .env.example .env
           echo "DB_CONNECTION=${{ vars.DB_CONNECTION }}" >> .env
           echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
           echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
-          echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env
-          echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
 
       - name: Run Migrations
         run: |
