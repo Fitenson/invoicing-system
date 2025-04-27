@@ -37,7 +37,3 @@ jobs:
           DB_PASSWORD=npg_7l8NnjoCHrdU
           EOL
           cat .env
-
-      - name: Run Migrations
-        run: |
-          php artisan migrate --force --verbose || php artisan migrate:status
