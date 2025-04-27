@@ -26,17 +26,15 @@ jobs:
 
       - name: Set up .env file
         run: |
-          echo "DB_CONNECTION=${{ secrets.DB_CONNECTION }}" >> .env
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          cat > .env << EOL
+          APP_ENV=production
+          APP_DEBUG=false
+          DB_CONNECTION=pgsql
+          DB_PORT=5432
+          DATABASE_URL="postgres://neondb_owner:npg_7l8NnjoCHrdU@ep-hidden-cloud-a133vygv-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+          EOL
+          cat .env
 
       - name: Run Migrations
         run: |
           php artisan migrate --force
-        env:
-          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
