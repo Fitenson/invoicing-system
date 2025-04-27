@@ -37,4 +37,4 @@ jobs:
 
       - name: Run Migrations
         run: |
-          php artisan migrate --force
+          php artisan migrate:fresh --force
