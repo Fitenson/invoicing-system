@@ -73,11 +73,6 @@ return [
             'prefix_indexes' => true,
             'schema' => 'public',
             'sslmode' => 'require', // Enforce SSL
-            'options' => []
-            // 'options' => [
-            //     PDO::ATTR_EMULATE_PREPARES => true, // If needed for compatibility
-            //     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            // ],
         ],
 
 
